@@ -2,6 +2,8 @@
 title: "jaredbpetry.github.io"
 ---
 
+Alright cool this is my first edit to my first ever website dude!
+
 This is a Quarto website.
 
 To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
