@@ -1,0 +1,15 @@
+---
+title: "blog post title"
+description: "this is a description"
+author:
+  - name: Jared Petry 
+    url: https://jaredbpetry.github.io
+date: 2022-10-24
+catagories: [MEDS, R]
+#citation: 
+  #url:
+  #image:
+  #photo:
+---
+
+Hi this is the first blog post ever mate 
