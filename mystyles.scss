@@ -1,0 +1,27 @@
+/*-- scss:defaults --*/
+
+//single line comment ...the above is how you can make a multi-line comment 
+
+
+// Fonts 
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+
+
+// Colors - here's an example of how to pick colors 
+$dark-blue: #330CC4;
+$burnt-orange: #E98317;
+$dark-pink: #D80B84;
+
+// Base Documents Colors 
+$navbar-bg: $dark-blue;
+$body-bg: $burnt-orange;
+$linkcolor: $burnt-orange;
+
+/*-- scss:rules --*/
+
+h1, h3 {
+  letter-spacing: 8px;
+}
+
+
+
