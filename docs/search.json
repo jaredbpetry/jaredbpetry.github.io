@@ -1,10 +1,17 @@
 [
   {
+    "objectID": "Posts/2022-10-24-blogpost/index.html",
+    "href": "Posts/2022-10-24-blogpost/index.html",
+    "title": "blog post title",
+    "section": "",
+    "text": "Hi this is the first blog post ever mate"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "jaredbpetry.github.io",
+    "title": "Jared Petry",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+    "text": "Jared is a student of the Masters of Environmental Data Science program at UC Santa Barbara. He obtained his environmental studies bachelors of science degree in 2021 at UC Santa Barbara as well, with a focus on ecology. After graduating, Jared spent a year working in both sustainable seafood and salmonid restoration. Jared is interested in applying his growing data science knowledge to creating models that imitate natural systems in order to understand our rapidly changing world. Specifically, he is interested in marine habitat restoration, fisheries and aquaculture science, environmental justice, and the effects of coastal development on marine ecosystems and recreational activities. While believing that our future depends on the health of our oceans, Jared is optimistic that responsible ocean aquaculture can sustain our growing demand for healthy seafood protein. Jared can usually be found surfing and exploring novelty, remote beaches around Santa Barbara County. In the future, he hopes to learn more about the impact of climate change on recurring weather patterns, longshore sand flow, and coastal systems in general."
   },
   {
     "objectID": "about.html",
