@@ -1,6 +1,6 @@
 ---
 title: "About"
-image: : "IMG_5726.PNG"
+image: "IMG_5726.PNG"
 about:
   image-shape: "rectangle"
 ---
