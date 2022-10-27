@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: About
 image: images/IMG_5726.png
 about:
   image-shape: rectangle
