@@ -2,7 +2,7 @@
 title: "About"
 image: images/IMG_5726.png
 about:
-  image-shape: "rectangle"
+  image-shape: rectangle
 ---
 
 ### About Jared 
