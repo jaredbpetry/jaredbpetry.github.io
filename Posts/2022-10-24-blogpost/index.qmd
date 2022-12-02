@@ -1,15 +1,15 @@
 ---
-title: "blog post title"
-description: "this is a description"
+title: "Statistical Time-series Analysis of Data from Harvest Buoy"
+description: "Here's my final project for statistics, where I use classical decomposition modeling to attempt to answer the question: Are there long term trends in surfable waves here in Santa Barbara due to climate influences?"
 author:
   - name: Jared Petry 
     url: https://jaredbpetry.github.io
-date: 2022-10-24
-catagories: [MEDS, R]
+date: 2022-12-01
+catagories: [MEDS, R, stats, surf]
 #citation: 
   #url:
   #image:
   #photo:
 ---
 
-Hi this is the first blog post ever mate 
+Hi this is the first blog post ever mate
