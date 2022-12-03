@@ -2,7 +2,7 @@
 title: "My Blog"
 listing: 
   type: grid
-  contents: posts
+  contents: Posts
   sort: "date desc"
   categories: true
 ---
