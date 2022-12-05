@@ -11,7 +11,7 @@ bibliography: references.bib
 catagories: [MEDS, R, stats, surf]
 #citation: 
   #url:
-image: IMG_5726.PNG
-draft: TRUE
+image: images/IMG_5726.png
+draft: false
   #photo:
 ---

@@ -65,9 +65,9 @@ ul.task-list{list-style: none;}
     }
 
     const options = {
-      valueNames: ['listing-title','listing-author','listing-date','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: ["listing-title","listing-author","listing-date","listing-description","listing-categories"],
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -149,29 +149,35 @@ ul.task-list{list-style: none;}
 
 
 
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-date-sort="1669881600000" data-listing-file-modified-sort="1669939611912" data-listing-reading-time-sort="0.045">
-<a href="./Posts/2022-10-24-blogpost/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1669881600000" data-listing-file-modified-sort="1670280809162" data-listing-reading-time-sort="0.005">
+<div class="thumbnail">
+<p><a href="./Posts/stats_buoy_project/index.html"> <img src="./Posts/stats_buoy_project/images/IMG_5726.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./Posts/stats_buoy_project/index.html">
+<h3 class="no-anchor listing-title">
 Statistical Time-series Analysis of Data from Harvest Buoy
-</h5>
-<div class="card-text listing-description">
-Here’s my final project for statistics, where I use classical decomposition modeling to attempt to answer the question: Are there long term trends in surfable waves here in…
+</h3>
+<div class="listing-subtitle">
+
 </div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Jared Petry
+<div class="listing-description">
+<p>“Here’s my final project for statistics, where I use classical decomposition modeling to attempt to answer the question: Are there long term trends in surfable waves here in Santa Barbara due to climate influences?”</p>
 </div>
+</a>
+</div>
+<div class="metadata">
+<a href="./Posts/stats_buoy_project/index.html">
 <div class="listing-date">
 Dec 1, 2022
 </div>
-</div>
-</div>
+<div class="listing-author">
+Jared Petry
 </div>
 </a>
+</div>
 </div>
 </div>
 <div class="listing-no-matching d-none">
