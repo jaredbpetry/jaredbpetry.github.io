@@ -8,7 +8,7 @@
 
 <meta name="author" content="Jared Petry">
 <meta name="dcterms.date" content="2022-12-01">
-<meta name="description" content="“Here’s my final project for statistics, where I use classical decomposition modeling to attempt to answer the question: Are there long term trends in surfable waves here in Santa Barbara due to climate influences?”">
+<meta name="description" content="“Can we use buoy data to determine whether or not there are long run trends in wave height, period, and direction? What role does the El Niño Southern Oscillation (ENSO) have in determining patterns in these variables?”">
 
 <title>Jared Petry - Statistical Time-series Analysis of Data from Harvest Buoy</title>
 <style>
@@ -18,6 +18,69 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -57,6 +120,7 @@ ul.task-list{list-style: none;}
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -97,7 +161,7 @@ ul.task-list{list-style: none;}
       <h1 class="title">Statistical Time-series Analysis of Data from Harvest Buoy</h1>
                   <div>
         <div class="description">
-          <p>“Here’s my final project for statistics, where I use classical decomposition modeling to attempt to answer the question: Are there long term trends in surfable waves here in Santa Barbara due to climate influences?”</p>
+          <p>“Can we use buoy data to determine whether or not there are long run trends in wave height, period, and direction? What role does the El Niño Southern Oscillation (ENSO) have in determining patterns in these variables?”</p>
         </div>
       </div>
                 </div>
@@ -134,7 +198,20 @@ ul.task-list{list-style: none;}
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background">Background</a></li>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link" data-scroll-target="#motivation">Motivation</a></li>
+  <li><a href="#about-the-data" id="toc-about-the-data" class="nav-link" data-scroll-target="#about-the-data">About the data</a></li>
+  <li><a href="#decomposition" id="toc-decomposition" class="nav-link" data-scroll-target="#decomposition">Decomposition</a></li>
+  <li><a href="#decomposition-analysis" id="toc-decomposition-analysis" class="nav-link" data-scroll-target="#decomposition-analysis">Decomposition Analysis</a></li>
+  <li><a href="#another-question" id="toc-another-question" class="nav-link" data-scroll-target="#another-question">Another Question</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
@@ -142,8 +219,374 @@ ul.task-list{list-style: none;}
 
 
 
+<section id="background" class="level3">
+<h3 class="anchored" data-anchor-id="background">Background</h3>
+<p>Living in Santa Barbara can be tricky from a surfer’s perspective.&nbsp; When I moved here from San Diego, I learned that it takes far more diligence and knowledge of reading meteorological data in order to score some fun waves here.&nbsp; If you really know what you’re doing, you can even get some great spots all to yourself some days.&nbsp;</p>
+<p>Lately, I have been hearing from the older locals that we have had the worst three winters in a row that they can remember. As I learned more about climate change in my undergraduate career alongside my own surfing research, I began to wonder if there’s a connection between climate change and surfing opportunities.&nbsp; Is this all in our heads as frustrated SB surfers? Could the increasing variability of storms due to climate change affect the surf in Santa Barbara?</p>
+<p>This short blog post will focus on wave prevalence and attributes over time due to patterns in storm activity.&nbsp; I would like to find out whether there has been a trend or pattern in surf availability based on time series buoy data using classical decomposition. If possible, I would also like to link this to the ENSO cycles.<br>
+</p>
+</section>
+<section id="motivation" class="level3">
+<h3 class="anchored" data-anchor-id="motivation">Motivation</h3>
+<p>Most, if not all adventure sports are being somewhat impacted by climate change due to their dependency on wind, rainfall, temperature, swell, snowmelt, and other climate variables.&nbsp; We have already seen effects of increased climate variability on the adventure tourism industry, specifically in snow sports. (Buckley, 2017).&nbsp; But how does climate change relate to surfing? Rising sea level paired with anthropogenic variables such as coastal development and depleted sand banks (from upstream hydroelectric dams) combine to exacerbate coastal erosion and ultimately contribute to the altering of underwater bathymetry that creates the waves that we salty people depend on (Arroyo, 2019).&nbsp; Many surfing locations all over California have been both tragically lost and accidentally created at the hand of human activity.&nbsp;&nbsp;</p>
+<p>Within the realm of surf frequency and quality, a key predictor of any given year’s surfing potential in California is the El Nino Southern Oscillation (ENSO) status.&nbsp; During El Nino years, the storm track over the North Pacific is usually enhanced, and we see high quality surf travel from straight West through the Santa Barbara Channel. During strong events, California sees especially significant surf.&nbsp; During La Nina, blocking high pressure over the pacific during winter typically limits tropical swells in the eastern pacific, and shifts the storm track to the North, causing many swells to miss the Santa Barbara Channel (Surfline, 2020).&nbsp;&nbsp;</p>
+<p>This winter (2022-23), there is a 76 percent chance that we will be experiencing our third La Nina even in a row, which is relatively rare (Johnson, 2022).&nbsp; Climate change is causing some strange anomalies in the ENSO cycle.&nbsp; According to National Oceanic and Atmospheric Association (NOAA) researcher Michael McPhaden, “Extreme El Niño and La Niña events may increase in frequency from about one every 20 years to one every 10 years by the end of the 21st century under aggressive greenhouse gas emission scenarios.”&nbsp; (research.noaa.gov).&nbsp; The last extreme ENSO event that we have had was the winter of 2015-2016, when a brutal stream of storms battered the Santa Barbara coastline, causing considerable damage, and amazing surf.</p>
+</section>
+<section id="about-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="about-the-data">About the data</h3>
+<p>I used data from the buoy that I look at every day, that guides all my surf decision making, the Harvest Buoy off Point Conception.&nbsp; It is owned by the Scripps Institute of Oceanography and its data is distributed by NOAA.&nbsp; This buoy has been up and running since 2004, but the data has a few large gaps (I think because of maintenance or malfunction reasons) up until 2010.&nbsp; From 2010 onward, there are two observations every single hour of every day until this moment.&nbsp; The measurements that I am interested in are wave height, dominant wave period - basically wavelength, average wave period, and swell direction.&nbsp;&nbsp;</p>
+<p>There are seemingly many ways to retrieve this data, but the one that I was able to get to work was through this link:</p>
+<p><a href="https://www.ndbc.noaa.gov/station_history.php?station=46218" class="uri">https://www.ndbc.noaa.gov/station_history.php?station=46218</a></p>
+<p>You can access a description of this data and variables through this link: <a href="https://www.ndbc.noaa.gov/measdes.shtml" class="uri">https://www.ndbc.noaa.gov/measdes.shtml</a></p>
+<p>It was extremely difficult to make sense of this data because it came in the form of a .txt file that tried to make use of spaces in order to form columns.&nbsp; All the functions I tried to use to read it in as a csv file were getting all the columns mismatched and jumbled up... until I found the <code>read.table()</code> function.&nbsp; With this function I still had to do some renaming and matching of the columns but it left the data intact.</p>
+<p>I ended up with this dataframe below which has observations of wave height, dominant period, average period, peak swell direction, and temperature. The variables that I felt were relevant to this project were wave height, swell direction, and dominant period.<br>
+</p>
+<div class="cell">
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor) </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here) </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(feasts)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tufte)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xts)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsibble)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>df_2010 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/txt_files/46218h2010.txt"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>df_2011 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/txt_files/46218h2011.txt"</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>df_2012 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/txt_files/46218h2012.txt"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>df_2013 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/txt_files/46218h2013.txt"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>df_2014 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/txt_files/46218h2014.txt"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>df_2015 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/txt_files/46218h2015.txt"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>df_2016 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/txt_files/46218h2016.txt"</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>df_2017 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/txt_files/46218h2017.txt"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>df_2018 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/txt_files/46218h2018.txt"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>df_2019 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/txt_files/46218h2019.txt"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>df_2020 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/txt_files/46218h2020.txt"</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>df_2021 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/txt_files/46218h2021.txt"</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>all_wave_df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(df_2010, df_2011, df_2012, df_2013, df_2014,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>                     df_2015, df_2016, df_2017, df_2018, df_2019, </span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>                     df_2020, df_2021)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>waves_renamed <span class="ot">&lt;-</span> all_wave_df <span class="sc">|&gt;</span> </span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">year =</span> V1, </span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>         <span class="at">month =</span> V2, </span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>         <span class="at">day =</span> V3, </span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>         <span class="at">hour =</span> V4, </span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>         <span class="at">minute =</span> V5, </span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>         <span class="at">wave_height =</span> V9, </span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>         <span class="at">dom_period =</span> V10,</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>         <span class="at">av_period =</span> V11, </span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>         <span class="at">peak_direction =</span> V12, </span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>         <span class="at">temp =</span> V15) </span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>waves_clean <span class="ot">&lt;-</span> waves_renamed <span class="sc">|&gt;</span> </span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, month, day, hour, minute, wave_height, dom_period,</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>         av_period, peak_direction, temp)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(waves_clean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  year month day hour minute wave_height dom_period av_period peak_direction
+1 2010     1   1    0     13        1.65      12.50      8.69            287
+2 2010     1   1    0     43        1.58      12.50      8.67            280
+3 2010     1   1    1     13        1.55      12.50      8.93            290
+4 2010     1   1    1     43        1.62      11.76      9.04            283
+5 2010     1   1    2     13        1.57      12.50      8.63            300
+6 2010     1   1    2     43        1.49      13.33      8.36            273
+  temp
+1 14.2
+2 14.2
+3 14.1
+4 14.1
+5 14.2
+6 14.1</code></pre>
+</div>
+</div>
+<p>To create a quick visualization of what these variables look like, I calculated the mean of each one per year and made these very simple plots:</p>
+<div class="cell">
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- compare yearly mean wave height </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>yearly_mean_wvht <span class="ot">&lt;-</span> waves_clean <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">wave_height =</span> <span class="fu">mean</span>(wave_height)) </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(yearly_mean_wvht)  </span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#--- compare yearly mean dominant period</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>yearly_mean_dom_period <span class="ot">&lt;-</span> waves_clean <span class="sc">|&gt;</span> </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span> </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">period =</span> <span class="fu">mean</span>(dom_period))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(yearly_mean_dom_period) </span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#--- compare yearly mean swell direction</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>yearly_mean_direction <span class="ot">&lt;-</span> waves_clean <span class="sc">|&gt;</span> </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span> </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">direction =</span> <span class="fu">mean</span>(peak_direction))</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(yearly_mean_direction)  </span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#--- Plot the three variables in a 1x3 row</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(yearly_mean_wvht, </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Average wave height by year"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(yearly_mean_dom_period, </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Average period by year"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(yearly_mean_direction, </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Average swell direction by year"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>If you add a linear regression line to the wave height variable across years, you get this slightly concerning downward trend line. What could this mean? We know there are many factors playing a role in the distribution of wave height year to year, specifically seasonality and the El Nino Southern Oscillation cycles. To explore this relationship further, I would like to isolate seasonality and extract a long-run trend from this time series data using classical additive decomposition.</p>
+<div class="cell">
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- add an lm trend line to our wave height averages plot using ggplot</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> yearly_mean_wvht, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> wave_height)) <span class="sc">+</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">col =</span> <span class="st">"blue"</span>) <span class="sc">+</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> lm, <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Average wave height by year with linear regression"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="decomposition" class="level3">
+<h3 class="anchored" data-anchor-id="decomposition">Decomposition</h3>
+<p>The North Pacific come to life in wintertime, and goes back to sleep in the summer… for the most part. When dealing with very seasonal data like this it can be useful to create a classical additive decomposition model. This model will decompose the data into seasonal, random, and trend components like this: <span class="math display">\[y_t = S_t + T_t + R_t\]</span> After we have separated these components we can plot them to compare which significantly impact our data. To do this, I had to create a unique daily index for the time series tibble that I could use for the model. I did this by calculating the average of our variables by day. Next, I used the <code>lubridate::ISOdate()</code> function to consolidate our time variables into a usable date index for our time series. After converting this intermediate dataframe into a <code>tsibble</code> object, I had to fill some gaps in time by using <code>tsibble::fill_gaps()</code> and <code>tidyr::fill()</code>. After feeding this through our decomposition model, you can see plots generated below for our variables of interest.</p>
+<div class="cell">
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- Add in ISOdate column to use in tsibble index</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>waves_clean<span class="sc">$</span>dt <span class="ot">&lt;-</span> <span class="fu">ISOdate</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    waves_clean<span class="sc">$</span>year,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    waves_clean<span class="sc">$</span>month,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    waves_clean<span class="sc">$</span>day,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    waves_clean<span class="sc">$</span>hour,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    waves_clean<span class="sc">$</span>minute,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> <span class="fu">na.omit</span>()</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#--- Convert to time series tibble</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>wave_ts <span class="ot">=</span> <span class="fu">as_tsibble</span>(waves_clean, <span class="at">index=</span><span class="st">"dt"</span>) </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#--- Create a regular fixed-interval time series by aggregating daily wave</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># height as the mean height for each day.  Also, some days were missing,</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># could be due to wrong days in a month, like Feb, so using fill_gaps() to</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># add any needed rows and fill() to use prior measurement for the gaps.</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>wave_regular <span class="ot">=</span> wave_ts <span class="sc">%&gt;%</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">index_by</span>(<span class="at">index =</span> <span class="sc">~</span> <span class="fu">as_date</span>(.)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">wave_height =</span> <span class="fu">median</span>(wave_height),</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">dom_period =</span> <span class="fu">median</span>(dom_period),</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">av_period =</span> <span class="fu">median</span>(av_period),</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">peak_direction =</span> <span class="fu">median</span>(peak_direction), </span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">temp =</span> <span class="fu">median</span>(temp)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill_gaps</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">fill</span>(wave_height, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">fill</span>(dom_period, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">fill</span>(av_period, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">fill</span>(peak_direction, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">fill</span>(temp, <span class="at">.direction =</span> <span class="st">"down"</span>)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Now, we have a "regular" fixed-interval tsibble with median measurements per day, with column 'index'</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="co">#--- Classical addititve decomposition of wave height</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>wave_regular <span class="sc">%&gt;%</span> </span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="fu">classical_decomposition</span>(wave_height <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"1 year"</span>), </span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>                                <span class="at">type =</span> <span class="st">"additive"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Classical addititve decomposition of wave height"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- Classical addititve decomposition of dominant wave period</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>wave_regular <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="fu">classical_decomposition</span>(dom_period <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"1 year"</span>), </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">type=</span><span class="st">'additive'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Classical addititve decomposition of dominant period"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- Classical addititve decomposition of average wave period</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>wave_regular <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="fu">classical_decomposition</span>(av_period <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"1 year"</span>), </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">type=</span><span class="st">'additive'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Classical addititve decomposition of average period"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- Classical addititve decomposition of peak swell direction</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>wave_regular <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="fu">classical_decomposition</span>(peak_direction <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"1 year"</span>), </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">type=</span><span class="st">'additive'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Classical addititve decomposition of peak swell direction"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-4-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="decomposition-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="decomposition-analysis">Decomposition Analysis</h3>
+<p>As you can tell looking at these decomposition plots, there’s no way to make out a definitive trend in any of the variables, whether they are going up or down over time. Additionally, this is a very short time period in the grand scheme of climate change over time since the industrial revolution. Perhaps we could visualize more meaningful relationships over time if these measurements had taken place since the 1940s or so.</p>
+<p>However, we do see an interesting spike in wave height and period during a time period around 2016. We also see a sharp drop in swell direction to about an average of 280 degrees. These conditions are all very favorable to surfing in Santa Barbara. This time period around 2016 also aligns with the very strong El Nino event that took place that year. Here is a useful graphic of El Nino oscillations over our time period of interest (Null, 2022).</p>
+<div class="cell">
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/enso_graph.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="images/enso_graph.png" class="img-fluid" width="1051"></p>
+</div>
+</div>
+</section>
+<section id="another-question" class="level3">
+<h3 class="anchored" data-anchor-id="another-question">Another Question</h3>
+<p>Since we see the variables changing during this El Nino event, I would like to compare our wave height, period, and direction during a strong El Nino event with that of a strong La Nina event. Since there is only one of each happening within the 2010-2021 period that we have buoy data for, I will compare the 2010-11 La Nina event (June 1, 2010 - May 31, 2011) with the 2015-16 El Nino event (April 1, 2015 - March 31, 2016).</p>
+<p>First, I’ll subset our time series dataframe into just those time periods, with an added <code>enso</code> column that will either say “el_nino” or “la_nina”. Then I will be able to use the <code>stats::t.test()</code> function to determine whether the difference in means of our variables of interest differ statistically between strong El Nino and La Nina events.</p>
+<div class="cell">
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- create la nina filter: june 1, 2010- may 31 2011 and create an enso column that says that it was la nina</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>la_nina <span class="ot">&lt;-</span> wave_regular <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">between</span>(index, <span class="fu">as.Date</span>(<span class="st">"2010-06-01"</span>), <span class="fu">as.Date</span>(<span class="st">"2011-05-31"</span>))) </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>la_nina<span class="sc">$</span>enso <span class="ot">&lt;-</span> <span class="st">"la_nina"</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#--- create el nino filter: june 1, 2010- may 31 2011 and create an enso column that says that it was el nino</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>el_nino <span class="ot">&lt;-</span> wave_regular <span class="sc">|&gt;</span> </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">between</span>(index, <span class="fu">as.Date</span>(<span class="st">"2015-04-01"</span>), <span class="fu">as.Date</span>(<span class="st">"2016-03-31"</span>))) </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>el_nino<span class="sc">$</span>enso <span class="ot">&lt;-</span> <span class="st">"el_nino"</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#--- visualize the means of our variables </span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>comparison_chart <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">enso =</span> <span class="fu">c</span>(<span class="st">" 2010-11 la nina"</span>, <span class="st">"2015-16 el nino"</span>), </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>                               <span class="at">mean_height =</span> <span class="fu">c</span>(<span class="fu">mean</span>(la_nina<span class="sc">$</span>wave_height), </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>                                               <span class="fu">mean</span>(el_nino<span class="sc">$</span>wave_height)),</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>                               <span class="at">mean_period =</span> <span class="fu">c</span>(<span class="fu">mean</span>(la_nina<span class="sc">$</span>dom_period), </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>                                               <span class="fu">mean</span>(el_nino<span class="sc">$</span>dom_period)),</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>                               <span class="at">mean_direction =</span> <span class="fu">c</span>(<span class="fu">mean</span>(la_nina<span class="sc">$</span>peak_direction),</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>                                                  <span class="fu">mean</span>(el_nino<span class="sc">$</span>peak_direction)))</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>                               </span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>comparison_chart</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              enso mean_height mean_period mean_direction
+1  2010-11 la nina    2.203219    11.87426       287.4562
+2  2015-16 el nino    2.309850    12.49772       281.9139</code></pre>
+</div>
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- join these dataframes together to run t-test</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>comparison_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(la_nina, el_nino)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">#--- run t-test to see if enso status really affects our variables</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#--- WAVE HEIGHT</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(wave_height<span class="sc">~</span>enso, <span class="at">data =</span> comparison_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  wave_height by enso
+t = 1.6275, df = 673.93, p-value = 0.1041
+alternative hypothesis: true difference in means between group el_nino and group la_nina is not equal to 0
+95 percent confidence interval:
+ -0.02201407  0.23527517
+sample estimates:
+mean in group el_nino mean in group la_nina 
+             2.309850              2.203219 </code></pre>
+</div>
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- PERIOD</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(dom_period<span class="sc">~</span>enso, <span class="at">data =</span> comparison_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  dom_period by enso
+t = 3.0192, df = 720.98, p-value = 0.002624
+alternative hypothesis: true difference in means between group el_nino and group la_nina is not equal to 0
+95 percent confidence interval:
+ 0.2180466 1.0288700
+sample estimates:
+mean in group el_nino mean in group la_nina 
+             12.49772              11.87426 </code></pre>
+</div>
+<details>
+<summary>Show Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- DIRECTION</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(peak_direction<span class="sc">~</span>enso, <span class="at">data =</span> comparison_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  peak_direction by enso
+t = -1.9964, df = 728.15, p-value = 0.04627
+alternative hypothesis: true difference in means between group el_nino and group la_nina is not equal to 0
+95 percent confidence interval:
+ -10.99248229  -0.09197763
+sample estimates:
+mean in group el_nino mean in group la_nina 
+             281.9139              287.4562 </code></pre>
+</div>
+</div>
+</section>
+<section id="discussion" class="level3">
+<h3 class="anchored" data-anchor-id="discussion">Discussion</h3>
+<p>It is interesting to see that with a significance value of alpha = 0.05, the difference in wave height was not statistically significant (but still close). However, the mean period was significantly smaller for the La Nina period than the El Nino, AND the mean swell direction was significantly steeper during the La Nina event as well. This lends support to the observation that El Nino years have bigger waves, longer periods, and a better swell angle (closer to 270 degrees) than La Nina years.</p>
+<p>However, this is still relatively inconclusive, because no two ENSO cycles are exactly alike and we only have one of each here to compare. It is likely that different ENSO events have slightly different qualities and it would be irresponsible to generalize that just from comparing two of them we have uncovered some absolute truths. Nonetheless, comparing these two events did line up with what I outlined in the “motivation” section above. Due to the altering of the pacific storm track during an El Nino event, we see more waves coming straight into the SB channel without having to wrap around Point Conception to the North.</p>
+</section>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<p>Arroyo, M., Levine, A., &amp; Espejel, I. (2019). A transdisciplinary framework proposal for surf break conservation and management: Bahía de Todos Santos World Surfing Reserve. <em>Ocean &amp; Coastal Management</em>, <em>168</em>, 197–211. https://doi.org/10.1016/j.ocecoaman.2018.10.022</p>
+<p>Buckley, R. (2017). Perceived Resource Quality as a Framework to Analyze Impacts of Climate Change on Adventure Tourism: Snow, Surf, Wind, and Whitewater. <em>Tourism Review International</em>, <em>21</em>(3), 241–254. https://doi.org/10.3727/154427217X15022104437729</p>
+<p><em>El Nino, La Nina, ENSO and What They Mean to Your Surf</em>. (2020, April 17). Surfline. https://www.surfline.com/surf-news/el-nino-la-nina-enso-what-they-mean-to-your-surf/82991</p>
+<p>Goldman, S. (2017, March 1). <em>Storms, Powerful Waves Have Eaten Away Santa Barbara County Coastlines to Historic Levels</em>. https://www.noozhawk.com/article/storms_waves_coastal_erosion_santa_barbara_county_historic_levels</p>
+<p><em>How will climate change change El Niño and La Niña? - Welcome to NOAA Research</em>. (2020, November 9). How Will Climate Change Change El Niño and La Niña? https://research.noaa.gov/article/ArtMID/587/ArticleID/2685/New-research-volume-explores-future-of-ENSO-under-influence-of-climate-change</p>
+<p>Johnson, N. (2022, November 22). <em>Another winter in La Niña’s grip? – November update to NOAA’s 2022-23 Winter Outlook | NOAA Climate.gov</em>. http://www.climate.gov/news-features/blogs/another-winter-la-ni%C3%B1a%E2%80%99s-grip-%E2%80%93-november-update-noaas-2022-23-winter-outlook</p>
+<p>Null, J. (2022, October 1). <em>El Niño and La Niña Years and Intensities</em>. https://ggweather.com/enso/oni.htm</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
