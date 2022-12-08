@@ -5,7 +5,7 @@ description: |
 author:
   - name: Jared Petry 
     url: https://jaredbpetry.github.io
-    affiliation: Master of Environmental Data Science Program @ UCSB
+    affiliation: Master of Environmental Data Science Program at UCSB
 date: 2022-12-01
 bibliography: references.bib
 catagories: [MEDS, R, stats, surf]
@@ -26,6 +26,10 @@ code-block-bg: true
 code-block-border-left: "#6B5A75"
 editor: visual
 ---
+
+```{r, echo=FALSE}
+knitr::include_graphics("images/sands_pic.png", dpi = 100)
+```
 
 ### Background
 
@@ -55,7 +59,13 @@ You can access a description of this data and variables through this link: <http
 
 It was extremely difficult to make sense of this data because it came in the form of a .txt file that tried to make use of spaces in order to form columns.  All the functions I tried to use to read it in as a csv file were getting all the columns mismatched and jumbled up\... until I found the `read.table()` function.  With this function I still had to do some renaming and matching of the columns but it left the data intact.
 
-I ended up with this dataframe below which has observations of wave height, dominant period, average period, peak swell direction, and temperature. The variables that I felt were relevant to this project were wave height, swell direction, and dominant period.\
+I ended up with this dataframe below which has observations of wave height, dominant period, average period, peak swell direction, and temperature. The variables that I felt were relevant to this project were wave height, swell direction, and dominant period.
+
+```{r}
+knitr::include_graphics("images/buoy_pic.png")
+```
+
+\
 
 ```{r, echo = TRUE, eval = TRUE, warning=FALSE, message=FALSE}
 library(dplyr) 
@@ -225,7 +235,7 @@ As you can tell looking at these decomposition plots, there's no way to make out
 
 However, we do see an interesting spike in wave height and period during a time period around 2016. We also see a sharp drop in swell direction to about an average of 280 degrees. These conditions are all very favorable to surfing in Santa Barbara. This time period around 2016 also aligns with the very strong El Nino event that took place that year. Here is a useful graphic of El Nino oscillations over our time period of interest (Null, 2022).
 
-```{r}
+```{r, echo=FALSE}
 knitr::include_graphics("images/enso_graph.png")
 ```
 
@@ -258,7 +268,19 @@ comparison_chart <- data.frame(enso = c(" 2010-11 la nina", "2015-16 el nino"),
                                                   mean(el_nino$peak_direction)))
                                
 comparison_chart
+```
 
+#### Significance Tests
+
+In order to test whether these two ENSO events are significantly different in wave height, period, and swell direction, I will run three separate t-tests between the two time periods.
+
+**Wave height-**
+
+Null Hypothesis: There is no difference in the mean wave height of the 2010-11 La Nina event and the 2015-16 El Nino event.
+
+Alternative Hypothesis: There is a difference in the mean wave height of the 2010-11 La Nina event and the 2015-16 El Nino event.
+
+```{r}
 #--- join these dataframes together to run t-test
 
 comparison_df <- bind_rows(la_nina, el_nino)
@@ -267,20 +289,47 @@ comparison_df <- bind_rows(la_nina, el_nino)
 
 #--- WAVE HEIGHT
 t.test(wave_height~enso, data = comparison_df)
+```
 
+We fail to reject the null hypothesis at the alpha = 0.05 significance level.
+
+**Dominant Period-**
+
+Null Hypothesis: There is no difference in the mean dominant period of the 2010-11 La Nina event and the 2015-16 El Nino event.
+
+Alternative Hypothesis: There is a difference in the mean dominant period of the 2010-11 La Nina event and the 2015-16 El Nino event.
+
+```{r}
 #--- PERIOD
 t.test(dom_period~enso, data = comparison_df)
+```
 
+We reject the null hypothesis at the alpha = 0.05 significance level.
+
+**Peak Swell Direction-**
+
+Null Hypothesis: There is no difference in the mean peak swell direction of the 2010-11 La Nina event and the 2015-16 El Nino event.
+
+Alternative Hypothesis: There is a difference in the mean peak swell direction of the 2010-11 La Nina event and the 2015-16 El Nino event.
+
+```{r}
 #--- DIRECTION
 t.test(peak_direction~enso, data = comparison_df)
-
 ```
+
+We reject the null hypothesis at the alpha = 0.05 significance level.
 
 ### Discussion
 
 It is interesting to see that with a significance value of alpha = 0.05, the difference in wave height was not statistically significant (but still close). However, the mean period was significantly smaller for the La Nina period than the El Nino, AND the mean swell direction was significantly steeper during the La Nina event as well. This lends support to the observation that El Nino years have bigger waves, longer periods, and a better swell angle (closer to 270 degrees) than La Nina years.
 
 However, this is still relatively inconclusive, because no two ENSO cycles are exactly alike and we only have one of each here to compare. It is likely that different ENSO events have slightly different qualities and it would be irresponsible to generalize that just from comparing two of them we have uncovered some absolute truths. Nonetheless, comparing these two events did line up with what I outlined in the "motivation" section above. Due to the altering of the pacific storm track during an El Nino event, we see more waves coming straight into the SB channel without having to wrap around Point Conception to the North.
+
+In conclusion, that results I got were probably known by many experts and most surfers via their own anecdotal evidence. Either way, it was still really cool to find evidence through my favorite buoy that supported my own real-life observations. \*\*\*time period too short While there may be no solid conclusions on whether or not climate change is affecting wave height, period, and direction\... it may be **shortening** the time periods between strong ENSO cycles (*How will climate change change El Niño and La Niña? , 2020).*
+
+\"Extreme El Niño and La Niña events may increase in frequency from about one every 20 years to one every 10 years by the end of the 21st century under aggressive greenhouse gas emission scenarios.\" 
+
+-   Michael McPhaden, Senior Scientist with NOAA\'s Pacific Marine Environmental Laboratory in Seattle and co-editor of \"El Niño Southern Oscillation in a Changing Climate\" published by the American Geophysical Union.\"
 
 ### References
 
