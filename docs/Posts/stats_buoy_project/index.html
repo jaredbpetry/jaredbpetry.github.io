@@ -8,7 +8,7 @@
 
 <meta name="author" content="Jared Petry">
 <meta name="dcterms.date" content="2022-12-01">
-<meta name="description" content="“Can we use buoy data to determine whether or not there are long run trends in wave height, period, and direction? What role does the El Niño Southern Oscillation (ENSO) have in determining patterns in these variables?”">
+<meta name="description" content="“Can we use buoy data in R to determine whether or not there are long run trends in wave height, period, and direction? What role does the El Niño Southern Oscillation (ENSO) have in determining patterns in these variables?”">
 
 <title>Jared Petry - Statistical Time-series Analysis of Data from Harvest Buoy</title>
 <style>
@@ -161,7 +161,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <h1 class="title">Statistical Time-series Analysis of Data from Harvest Buoy</h1>
                   <div>
         <div class="description">
-          <p>“Can we use buoy data to determine whether or not there are long run trends in wave height, period, and direction? What role does the El Niño Southern Oscillation (ENSO) have in determining patterns in these variables?”</p>
+          <p>“Can we use buoy data in R to determine whether or not there are long run trends in wave height, period, and direction? What role does the El Niño Southern Oscillation (ENSO) have in determining patterns in these variables?”</p>
         </div>
       </div>
                 </div>
@@ -231,23 +231,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="background">Background</h3>
 <p>Living in Santa Barbara can be tricky from a surfer’s perspective.&nbsp; When I moved here from San Diego, I learned that it takes far more diligence and knowledge of reading meteorological data in order to score some fun waves here.&nbsp; If you really know what you’re doing, you can even get some great spots all to yourself some days.&nbsp;</p>
 <p>Lately, I have been hearing from the older locals that we have had the worst three winters in a row that they can remember. As I learned more about climate change in my undergraduate career alongside my own surfing research, I began to wonder if there’s a connection between climate change and surfing opportunities.&nbsp; Is this all in our heads as frustrated SB surfers? Could the increasing variability of storms due to climate change affect the surf in Santa Barbara?</p>
-<p>This short blog post will focus on wave prevalence and attributes over time due to patterns in storm activity.&nbsp; I would like to find out whether there has been a trend or pattern in surf availability based on time series buoy data using classical decomposition. If possible, I would also like to link this to the ENSO cycles.<br>
+<p>This short blog post will focus on wave prevalence and attributes over time due to patterns in storm activity.&nbsp; I would like to use R to find out whether there has been a trend or pattern in surf availability based on time series buoy data using classical decomposition. If possible, I would also like to link this to the ENSO cycles.<br>
 </p>
 </section>
 <section id="motivation" class="level3">
 <h3 class="anchored" data-anchor-id="motivation">Motivation</h3>
 <p>Most, if not all adventure sports are being somewhat impacted by climate change due to their dependency on wind, rainfall, temperature, swell, snowmelt, and other climate variables.&nbsp; We have already seen effects of increased climate variability on the adventure tourism industry, specifically in snow sports (Buckley, 2017).&nbsp; But how does climate change relate to surfing? Rising sea level paired with anthropogenic variables such as coastal development and depleted sand banks (from upstream hydroelectric dams) combine to exacerbate coastal erosion. This can alter underwater bathymetry that creates the waves we salty people depend on (Arroyo, 2019).&nbsp; Many surfing locations all over California have been both tragically lost and accidentally created at the hand of human activity.&nbsp;&nbsp;</p>
-<p>Within the realm of surf frequency and quality, a key predictor of any given year’s surfing potential in California is the El Nino Southern Oscillation (ENSO) status.&nbsp; During El Nino years, the storm track over the North Pacific is usually enhanced, and we see swells travel from straight West through the Santa Barbara Channel. During strong events, California sees especially significant surf.&nbsp; During La Nina, blocking high pressure over the pacific during winter typically limits tropical swells in the eastern pacific, and shifts the storm track to the North, causing many swells to miss the Santa Barbara Channel (Surfline, 2020).&nbsp;&nbsp;</p>
-<p>This winter (2022-23), there is a 76 percent chance that we will be experiencing our third La Nina even in a row, which is relatively rare (Johnson, 2022).&nbsp; Climate change is causing some strange anomalies in the ENSO cycle.&nbsp; According to National Oceanic and Atmospheric Association (NOAA) researcher Michael McPhaden, “Extreme El Niño and La Niña events may increase in frequency from about one every 20 years to one every 10 years by the end of the 21st century under aggressive greenhouse gas emission scenarios.”&nbsp; (research.noaa.gov).&nbsp; The last extreme ENSO event that we have had was the winter of 2015-2016, when a brutal stream of storms battered the Santa Barbara coastline, causing considerable damage, and amazing surf.</p>
+<p>Within the realm of surf frequency and quality, a key predictor of any given year’s surfing potential in California is the El Niño Southern Oscillation (ENSO) status.&nbsp; During El Niño years, the storm track over the North Pacific is usually enhanced, and we see swells travel from straight West through the Santa Barbara Channel. During strong events, California sees especially significant surf.&nbsp; During La Niña, blocking high pressure over the pacific during winter typically limits tropical swells in the eastern pacific, and shifts the storm track to the North, causing many swells to miss the Santa Barbara Channel (Surfline, 2020).&nbsp;&nbsp;</p>
+<p>This winter (2022-23), there is a 76 percent chance that we will be experiencing our third La Niña even in a row, which is relatively rare (Johnson, 2022).&nbsp; Climate change is causing some strange anomalies in the ENSO cycle.&nbsp; According to National Oceanic and Atmospheric Association (NOAA) researcher Michael McPhaden, “Extreme El Niño and La Niña events may increase in frequency from about one every 20 years to one every 10 years by the end of the 21st century under aggressive greenhouse gas emission scenarios.”&nbsp; (research.noaa.gov).&nbsp; The last extreme ENSO event that we have had was the winter of 2015-2016, when a brutal stream of storms battered the Santa Barbara coastline, causing considerable damage, and amazing surf.</p>
 </section>
 <section id="about-the-data" class="level3">
 <h3 class="anchored" data-anchor-id="about-the-data">About the data</h3>
-<p>I used data from the buoy that I look at every day, that guides all my surf decision making, the Harvest Buoy off Point Conception.&nbsp; It is owned by the Scripps Institute of Oceanography and its data is distributed by NOAA.&nbsp; This buoy has been up and running since 2004, but the data has a few large gaps (I think because of maintenance or malfunction reasons) up until 2010.&nbsp; From 2010 onward, there are two observations every single hour of every day until this moment.&nbsp; The measurements that I am interested in are wave height, dominant wave period - basically wavelength, average wave period, and swell direction.&nbsp;&nbsp;</p>
-<p>There are seemingly many ways to retrieve this data, but the one that I was able to get to work was through this link:</p>
-<p><a href="https://www.ndbc.noaa.gov/station_history.php?station=46218" class="uri">https://www.ndbc.noaa.gov/station_history.php?station=46218</a></p>
-<p>You can access a description of this data and variables through this link: <a href="https://www.ndbc.noaa.gov/measdes.shtml" class="uri">https://www.ndbc.noaa.gov/measdes.shtml</a></p>
-<p>It was extremely difficult to make sense of this data because it came in the form of a .txt file that tried to make use of spaces in order to form columns.&nbsp; All the functions I tried to use to read it in as a csv file were getting all the columns mismatched and jumbled up... until I found the <code>read.table()</code> function.&nbsp; With this function I still had to do some renaming and matching of the columns but it left the data intact.</p>
-<p>I ended up with this dataframe below which has observations of wave height, dominant period, average period, peak swell direction, and temperature. The variables that I felt were relevant to this project were wave height, swell direction, and dominant period.</p>
 <div class="cell">
 <details>
 <summary>Show Code</summary>
@@ -257,8 +251,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="images/buoy_pic.png" class="img-fluid" width="147"></p>
 </div>
 </div>
-<p><br>
-</p>
+<p>I used data from the buoy that I look at every day that guides all my surf decision making, the Harvest Buoy off Point Conception.&nbsp; It is owned by the Scripps Institute of Oceanography and its data is distributed by NOAA.&nbsp; This buoy has been up and running since 2004, but the data has a few large gaps (I think because of maintenance or malfunction reasons) up until 2010.&nbsp; From 2010 onward, there are two observations every single hour of every day until this moment.&nbsp; The measurements that I am interested in are wave height, dominant wave period - basically wavelength, average wave period, and swell direction.&nbsp;&nbsp;</p>
+<p>There are seemingly many ways to retrieve this data, but the one that I was able to get to work was through this link:</p>
+<p><a href="https://www.ndbc.noaa.gov/station_history.php?station=46218" class="uri">https://www.ndbc.noaa.gov/station_history.php?station=46218</a></p>
+<p>You can access a description of this data and variables through this link: <a href="https://www.ndbc.noaa.gov/measdes.shtml" class="uri">https://www.ndbc.noaa.gov/measdes.shtml</a></p>
+<p>The published data is in text files, with fields separated by spaces. I used the base R <code>read.table()</code> function to read the measurements into a data frame.&nbsp; With this function I still had to do some renaming and matching of the columns but it left the data intact.</p>
+<p>I ended up with this dataframe below which has observations of wave height, dominant period, average period, peak swell direction, and temperature. The variables that I felt were relevant to this project were wave height (feet), swell direction (degrees), and dominant period (seconds).</p>
 <div class="cell">
 <details>
 <summary>Show Code</summary>
@@ -306,7 +304,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>waves_clean <span class="ot">&lt;-</span> waves_renamed <span class="sc">|&gt;</span> </span>
 <span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, month, day, hour, minute, wave_height, dom_period,</span>
 <span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>         av_period, peak_direction, temp)</span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(waves_clean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(waves_clean) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>  year month day hour minute wave_height dom_period av_period peak_direction
@@ -371,7 +369,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="index_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>If you add a linear regression line to the wave height variable across years, you get this slightly concerning downward trend line. What could this mean? We know there are many factors playing a role in the distribution of wave height year to year, specifically seasonality and the El Nino Southern Oscillation cycles. To explore this relationship further, I would like to isolate seasonality and extract a long-run trend from this time series data using classical additive decomposition.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Jared</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">cool</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>is</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+
+</div>
+</div>
+</div>
+<p>If you add a linear regression line to the wave height variable across years, you get this slightly concerning downward trend line. What could this mean? We know there are many factors playing a role in the distribution of wave height year to year, specifically seasonality and the El Niño Southern Oscillation cycles. To explore this relationship further, I would like to isolate seasonality and extract a long-run trend from this time series data using classical additive decomposition.</p>
 <div class="cell">
 <details>
 <summary>Show Code</summary>
@@ -388,7 +397,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="decomposition" class="level3">
 <h3 class="anchored" data-anchor-id="decomposition">Decomposition</h3>
-<p>The North Pacific come to life in wintertime, and goes back to sleep in the summer… for the most part. When dealing with very seasonal data like this it can be useful to create a classical additive decomposition model. This model will decompose the data into seasonal, random, and trend components like this: <span class="math display">\[y_t = S_t + T_t + R_t\]</span> After we have separated these components we can plot them to compare which significantly impact our data. To do this, I had to create a unique daily index for the time series tibble that I could use for the model. I did this by calculating the average of our variables by day. Next, I used the <code>lubridate::ISOdate()</code> function to consolidate our time variables into a usable date index for our time series. After converting this intermediate dataframe into a <code>tsibble</code> object, I had to fill some gaps in time by using <code>tsibble::fill_gaps()</code> and <code>tidyr::fill()</code>. After feeding this through our decomposition model, you can see plots generated below for our variables of interest.</p>
+<p>The North Pacific comes to life in wintertime, and goes back to sleep in the summer… for the most part. When dealing with very seasonal data like this it can be useful to create a classical additive decomposition model. This model will decompose the data into seasonal, random, and trend components like this: <span class="math display">\[y_t = S_t + T_t + R_t\]</span></p>
+<p>After we have separated these components we can plot them to compare which significantly impact our data. The classical decomposition model library function requires fixed and exact periodic intervals between data measurements.&nbsp; The original wave data was taken approximately every 30 minutes and was somewhat regular, but not exact.&nbsp; So, I converted the measurements to a daily median (more resistant to outliers).&nbsp; There were still some gaps in the data, so I used tsibble::fill_gaps() to populate the gaps with “na” and tidyr::fill() to convert the “na” values to the last good measurement. After feeding this through our decomposition model, you can see plots generated below for our variables of interest.</p>
 <div class="cell">
 <details>
 <summary>Show Code</summary>
@@ -480,7 +490,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="decomposition-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="decomposition-analysis">Decomposition Analysis</h3>
 <p>As you can tell looking at these decomposition plots, there’s no way to make out a definitive trend in any of the variables, whether they are going up or down over time. Additionally, this is a very short time period in the grand scheme of climate change over time since the industrial revolution. Perhaps we could visualize more meaningful relationships over time if these measurements had taken place since the 1940s or so.</p>
-<p>However, we do see an interesting spike in wave height and period during a time period around 2016. We also see a sharp drop in swell direction to about an average of 280 degrees. These conditions are all very favorable to surfing in Santa Barbara. This time period around 2016 also aligns with the very strong El Nino event that took place that year. Here is a useful graphic of El Nino oscillations over our time period of interest (Null, 2022).</p>
+<p>However, we do see an interesting spike in wave height and period during a time period around 2016. We also see a sharp drop in swell direction to about an average of 280 degrees. These conditions are all very favorable to surfing in Santa Barbara. This time period around 2016 also aligns with the very strong El Niño event that took place that year. Here is a useful graphic of El Niño oscillations over our time period of interest (Null, 2022).</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="images/enso_graph.png" class="img-fluid" width="1051"></p>
@@ -489,8 +499,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="another-question" class="level3">
 <h3 class="anchored" data-anchor-id="another-question">Another Question</h3>
-<p>Since we see the variables changing during this El Nino event, I would like to compare our wave height, period, and direction during a strong El Nino event with that of a strong La Nina event. Since there is only one of each happening within the 2010-2021 period that we have buoy data for, I will compare the 2010-11 La Nina event (June 1, 2010 - May 31, 2011) with the 2015-16 El Nino event (April 1, 2015 - March 31, 2016).</p>
-<p>First, I’ll subset our time series dataframe into just those time periods, with an added <code>enso</code> column that will either say “el_nino” or “la_nina”. Then I will be able to use the <code>stats::t.test()</code> function to determine whether the difference in means of our variables of interest differ statistically between strong El Nino and La Nina events.</p>
+<p>Since we see the variables changing during this El Niño event, I would like to compare our wave height, period, and direction during a strong El Niño event with that of a strong La Niña event. Since there is only one of each happening within the 2010-2021 period that we have buoy data for, I will compare the 2010-11 La Niña event (June 1, 2010 - May 31, 2011) with the 2015-16 El Niño event (April 1, 2015 - March 31, 2016).</p>
+<p>First, I’ll subset our time series dataframe into just those time periods, with an added <code>enso</code> column that will either say “el_nino” or “la_nina”. Then I will be able to use the <code>stats::t.test()</code> function to determine whether the difference in means of our variables of interest differ statistically between strong El Niño and La Niña events.</p>
 <div class="cell">
 <details>
 <summary>Show Code</summary>
@@ -527,8 +537,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h4 class="anchored" data-anchor-id="significance-tests">Significance Tests</h4>
 <p>In order to test whether these two ENSO events are significantly different in wave height, period, and swell direction, I will run three separate t-tests between the two time periods.</p>
 <p><strong>Wave height-</strong></p>
-<p>Null Hypothesis: There is no difference in the mean wave height of the 2010-11 La Nina event and the 2015-16 El Nino event.</p>
-<p>Alternative Hypothesis: There is a difference in the mean wave height of the 2010-11 La Nina event and the 2015-16 El Nino event.</p>
+<p>Null Hypothesis: There is no difference in the mean wave height of the 2010-11 La Niña event and the 2015-16 El Niño event.</p>
+<p>Alternative Hypothesis: There is a difference in the mean wave height of the 2010-11 La Niña event and the 2015-16 El Niño event.</p>
 <div class="cell">
 <details>
 <summary>Show Code</summary>
@@ -557,8 +567,8 @@ mean in group el_nino mean in group la_nina
 </div>
 <p>We fail to reject the null hypothesis at the alpha = 0.05 significance level.</p>
 <p><strong>Dominant Period-</strong></p>
-<p>Null Hypothesis: There is no difference in the mean dominant period of the 2010-11 La Nina event and the 2015-16 El Nino event.</p>
-<p>Alternative Hypothesis: There is a difference in the mean dominant period of the 2010-11 La Nina event and the 2015-16 El Nino event.</p>
+<p>Null Hypothesis: There is no difference in the mean dominant period of the 2010-11 La Niña event and the 2015-16 El Niño event.</p>
+<p>Alternative Hypothesis: There is a difference in the mean dominant period of the 2010-11 La Niña event and the 2015-16 El Niño event.</p>
 <div class="cell">
 <details>
 <summary>Show Code</summary>
@@ -581,8 +591,8 @@ mean in group el_nino mean in group la_nina
 </div>
 <p>We reject the null hypothesis at the alpha = 0.05 significance level.</p>
 <p><strong>Peak Swell Direction-</strong></p>
-<p>Null Hypothesis: There is no difference in the mean peak swell direction of the 2010-11 La Nina event and the 2015-16 El Nino event.</p>
-<p>Alternative Hypothesis: There is a difference in the mean peak swell direction of the 2010-11 La Nina event and the 2015-16 El Nino event.</p>
+<p>Null Hypothesis: There is no difference in the mean peak swell direction of the 2010-11 La Niña event and the 2015-16 El Niño event.</p>
+<p>Alternative Hypothesis: There is a difference in the mean peak swell direction of the 2010-11 La Niña event and the 2015-16 El Niño event.</p>
 <div class="cell">
 <details>
 <summary>Show Code</summary>
@@ -608,8 +618,8 @@ mean in group el_nino mean in group la_nina
 </section>
 <section id="discussion" class="level3">
 <h3 class="anchored" data-anchor-id="discussion">Discussion</h3>
-<p>It is interesting to see that with a significance value of alpha = 0.05, the difference in wave height was not statistically significant (but still close). However, the mean period was significantly smaller for the La Nina period than the El Nino, AND the mean swell direction was significantly steeper during the La Nina event as well. This lends support to the observation that El Nino years have bigger waves, longer periods, and a better swell angle (closer to 270 degrees) than La Nina years.</p>
-<p>However, this is still relatively inconclusive, because no two ENSO cycles are exactly alike and we only have one of each here to compare. It is likely that different ENSO events have slightly different qualities and it would be irresponsible to generalize that just from comparing two of them we have uncovered some absolute truths. Nonetheless, comparing these two events did line up with what I outlined in the “motivation” section above. Due to the altering of the pacific storm track during an El Nino event, we see more waves coming straight into the SB channel without having to wrap around Point Conception to the North.</p>
+<p>It is interesting to see that with a significance value of alpha = 0.05, the difference in wave height was not statistically significant (but still close). However, the mean period was significantly smaller for the La Niña period than the El Niño, AND the mean swell direction was significantly steeper (more northerly, and less favorable for surfing in Santa Barbara) during the La Niña event. This lends support to the observation that El Niño years have bigger waves, longer periods, and a better swell direction (closer to 270 degrees) than La Niña years.</p>
+<p>However, this is still relatively inconclusive, because no two ENSO cycles are exactly alike and we only have one of each here to compare. It is likely that different ENSO events have slightly different qualities and it would be irresponsible to generalize that just from comparing two of them we have uncovered some absolute truths. Nonetheless, comparing these two events did line up with what I outlined in the “motivation” section above. Due to the altering of the pacific storm track during an El Niño event, we see more waves coming straight into the SB channel (~270 degrees, straight West) without having to wrap around Point Conception to the North.</p>
 <p>In further research, I would look into data from the West Santa Barbara buoy. This location is far more protected from north and south swells, which could be useful for more specific stats questions pertaining to just west swells. However, the refraction of swell around the islands and Point Conception sucks a lot of energy out of the swell which could decrease the variability in our data, therefore making statistical inferences more subtle.</p>
 <p>In conclusion, that results I got here were probably known by many experts and most surfers via their own anecdotal evidence. Either way, it was still really cool to find evidence through my favorite buoy that supported my own real-life observations.</p>
 </section>
