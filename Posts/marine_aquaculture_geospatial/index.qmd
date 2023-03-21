@@ -30,24 +30,31 @@ editor: visual
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-getwd()
+file_path <- getwd()
 ```
 
+```{r, echo=FALSE}
+knitr::include_graphics("images/oysters.png", dpi = 100)
+```
+source: https://fieldnotesjournal.org/new-blog/apearlintheroughoysteraquacultureandhowitworks
+
+
 ## Overview
-Marine aquaculture has the potential to play an important role in the global food supply as a more sustainable protein option than land-based meat production.[^hall] [Gentry et al.](https://www.nature.com/articles/s41559-017-0257-9) mapped the potential for marine aquaculture globally based on multiple constraints, including ship traffic, dissolved oxygen, bottom depth .[^gentry]
 
-For this assignment, you are tasked with determining which Exclusive Economic Zones (EEZ) on the West Coast of the US are best suited to developing marine aquaculture for several species of oysters.\
+Marine aquaculture has the potential to play an important role in the global food supply as a more sustainable protein option than land-based meat production.[^hall] [Gentry et al.](https://www.nature.com/articles/s41559-017-0257-9) 
 
-Based on previous research, we know that oysters needs the following conditions for optimal growth:\
+For this small project, we will determine which Exclusive Economic Zones (EEZ) on the West Coast of the US are best suited to developing marine aquaculture for several species of oysters.
+
+Based on previous research, we know that oysters needs the following conditions for optimal growth:
 
 -   sea surface temperature: 11-30 deg C
 -   depth: 0-70 meters below sea level
 
-##### Learning objectives:
--   combining vector/raster data\
--   resampling raster data\
--   masking raster data\
--   map algebra\
+##### Utilized skills: 
+-   combining vector raster data
+-   resampling raster data
+-   masking raster data
+-   map algebra
 
 ### Data
 #### Sea Surface Temperature
@@ -59,17 +66,10 @@ To characterize the depth of the ocean we will use the [General Bathymetric Char
 #### Exclusive Economic Zones
 We will be designating maritime boundaries using Exclusive Economic Zones off of the west coast of US from [Marineregions.org](https://www.marineregions.org/eez.php).
 
-## Assignment
-
-Below is an outline of the steps you should consider taking to achieve the assignment tasks. 
-
-#### Prepare data (5 points)
+#### Prepare data 
 To start, we need to load all necessary data and make sure it has the coordinate reference system. 
-
--   load necessary packages and set path\ 
-    -   I recommend using the [`here` package](https://here.r-lib.org/)
     
-```{r}
+```{r include=FALSE}
 library(terra) 
 library(dplyr) 
 library(stars) 
@@ -86,40 +86,29 @@ library(raster)
 library(tidyverse)
 ```
 
--   read in the shapefile for the West Coast EEZ (`wc_regions_clean.shp`)\
-
+Read in the shapefile for the West Coast EEZ (`wc_regions_clean.shp`)
 ```{r}
-wc_regions <- st_read(here("data/wc_regions_clean.shp"))
+wc_regions <- st_read(here(file_path, "data/wc_regions_clean.shp"))
 ```
--   read in SST rasters
-    -   `average_annual_sst_2008.tif`\
-    -   `average_annual_sst_2009.tif`\
-    -   `average_annual_sst_2010.tif`\
-    -   `average_annual_sst_2011.tif`\
-    -   `average_annual_sst_2012.tif`\
--   combine SST rasters into a raster stack\
 
-    
+Read in sea surface temperature rasters and combine them into a raster stack
 ```{r}
-# Ruth read the data in using list.files... let's try it that way
+# use list.files() to read in our data 
 #--- you start with a bunch of tif files that you want to stack
-#--- I created a list of just the ones starting with the letter a to get the sst rasters
+#--- I created a list of just the ones starting with the letter "a" to get the sst rasters I wanted
 file_list <- list.files(path = "data/", pattern = "^[a]", full.names = TRUE)
 #--- now read them in using rast... this will create a spatraster with multiple layers
-#-- (this isn't an actual raster stack so let's see if this works.. terra calls them the same thing)
+#--- (this isn't an actual raster stack so let's see if this works.. terra calls them the same thing)
 sst_spatrast <- rast(file_list)
-#--- at this point you get a crs that says like epsg4326 AND epsg9122 so we'll have to change that
+#--- at this point you get a crs that says epsg4326 AND epsg9122 so we'll have to change that
 ```
 
--   read in bathymetry raster (`depth.tif`)\
-
+Read in bathymetry raster (`depth.tif`)\
 ```{r}
-depth <- rast(here("data/depth.tif"))
+depth <- rast(here(file_path, "data/depth.tif"))
 ```
 
--   check that data are in the same coordinate reference system\
-    -   reproject any data not in the same projection\
-
+Check that data are in the same coordinate reference system and reproject any data not in the same projection
 ```{r include=TRUE, warning=FALSE, messages=FALSE}
 #--- depth raster is in lon/lat wgs84 EPSG:4326
 #--- wc_regions polygons in wgs84
@@ -131,51 +120,41 @@ set.crs(depth, "EPSG:4326")
 st_transform(wc_regions, crs = crs(depth)) #--- great now they are same crs
 ```
 
-#### Process data (10 points)
+#### Process data 
 Next, we need process the SST and depth data so that they can be combined. In this case the SST and depth data have slightly different resolutions, extents, and positions. We don't want to change the underlying depth data, so we will need to resample to match the SST data using the nearest neighbor approach. 
 
--   find the mean SST from 2008-2012\
-
+Find the mean SST from 2008-2012
 ```{r}
 mean_sst_spatrast <- terra::app(sst_spatrast, mean) 
 ```
 
--   convert SST data from Kelvin to Celsius\
-    -   hint: subtract by 273.15\
-    
+Convert SST data from Kelvin to Celsius
 ```{r}
 mean_sst_C <- mean_sst_spatrast - 273.15
 ```
 
--   crop depth raster to match the extent of the SST raster\
-
+Crop depth raster to match the extent of the SST raster
 ```{r}
 depth_cropped <- extend(depth, mean_sst_C)
 ```
 
--   note: the resolutions of the SST and depth data do not match\
-    -   resample the NPP data to match the resolution of the SST data using the nearest neighbor approach\
-    
+Resample the NPP data to match the resolution of the SST data using the nearest neighbor approach
 ```{r}
 depth_cropped_resampled <- resample(depth_cropped, mean_sst_C, 
                                     method = "near")
 ```
 
--   check that the depth and SST match in resolution, extent, and coordinate reference system\
-    -   hint: can the rasters be stacked?
-    
+Check that the depth and SST match in resolution, extent, and coordinate reference system... can the rasters be stacked?
 ```{r include=TRUE}
 #--- try to stack the depth raster and the SST raster:
 depth_and_sst <- raster::stack(c(depth_cropped_resampled, mean_sst_C))
 #--- yes! they can be stacked
 ```
 
-#### Find suitable locations (20)
+#### Find suitable locations 
 In order to find suitable locations for marine aquaculture, we'll need to find locations that are suitable in terms of both SST and depth.
 
--   reclassify SST and depth data into locations that are suitable for oysters\
-    -   hint: set suitable values to `1` and unsuitable values to `NA`\
-    
+Reclassify SST and depth data into locations that are suitable for oysters. We will do this by setting suitable values to `1` and unsuitable values to `NA`
 ```{r include=TRUE}
 #--- for oysters, we need 11 <= sst(C) <= 30
 #------ and 0 <= depth <= 70
@@ -204,9 +183,9 @@ plot(suitable_depth, col = "blue")
 plot(suitable_sst, col = "blue")
 ```
 
--   find locations that satisfy both SST and depth conditions\
-    -   hint: create an overlay using the `lapp()` function multiplying cell values\
-    -   this is terra::lapp()
+Find locations that satisfy both SST and depth conditions\
+    - create an overlay using the `lapp()` function multiplying cell values
+    - we will use `terra::lapp()`
     
 ```{r}
 #--- we want to multiply cell values so that with any NA in either layer, result will also be NA, with two 1s, the result will also be a 1
@@ -219,15 +198,15 @@ oyster_habitat <- lapp(c(suitable_depth, suitable_sst), fun)
 #--- plot(oyster_habitat)
 ```
 
-#### Determine the most suitable EEZ (20 points)
+#### Determine the most suitable EEZ 
 We want to determine the total suitable area within each EEZ in order to rank zones by priority. To do so, we need to find the total area of suitable locations within each EEZ.
 
--   select suitable cells within West Coast EEZs\
--   find area of grid cells\
--   find the total suitable area within each EEZ\
-    -   hint: it might be helpful to rasterize the EEZ data\
--   find the percentage of each zone that is suitable\
-    -   hint it might be helpful to join the suitable area by region onto the EEZ vector data\
+-   select suitable cells within West Coast EEZs
+-   find area of grid cells
+-   find the total suitable area within each EEZ
+    -   hint: it might be helpful to rasterize the EEZ data
+-   find the percentage of each zone that is suitable
+    -   hint it might be helpful to join the suitable area by region onto the EEZ vector data
     
 ```{r include=TRUE}
 #--- remember, our eez regions are the wc_regions we reprojected earlier
@@ -260,19 +239,13 @@ print_df <- habitat_by_region_df |>
 print_df
 ```
     
-#### Visualize results (5 points)
+#### Visualize results 
 Now that we have results, we need to present them!
 
-Create the following maps:
+We will create the following maps:
 
--   total suitable area by region\
--   percent suitable area by region\
-
-Include:
-
--   legible legends\
--   updated color aesthetics\
--   basemap\
+-   total suitable area by region
+-   percent suitable area by region
 
 ```{r include=TRUE}
 #--- map of total area 
@@ -303,11 +276,11 @@ tm_layout(legend.outside = TRUE,
 percent_map
 ```
 
-#### Broaden your workflow! (40 points)
-Now that you've worked through the solution for one group of species, let's update your workflow to work for other species. Please create a function that would allow you to reproduce your results for other species. Your function should be able to do the following:\
+#### Broaden your workflow! 
+Now that we've worked through the suitable habitat areas for one group of species, let's update our workflow to work for other species. We will do this by creating a function that would allow you to reproduce your results for other species. It will be able to do the following:
 
--   accept temperature and depth ranges and species name as inputs\
--   create maps of total suitable area and percent suitable area per EEZ with the species name in the title\
+-   accept temperature and depth ranges and species name as inputs
+-   create maps of total suitable area and percent suitable area per EEZ with the species name in the title
 
 ```{r}
 find_suitable_habitat <- function(spp_name, temp_min, temp_max, depth_min, depth_max) {
@@ -361,7 +334,7 @@ find_suitable_habitat(spp_name = "spp of interest", 5, 15, -100, 0)
 ```
 
 
-Run your function for a species of your choice! You can find information on species depth and temperature requirements on [SeaLifeBase](https://www.sealifebase.ca/search.php). Remember, we are thinking about the potential for marine aquaculture, so these species should have some reasonable potential for commercial consumption. 
+Anyone who wants to reproduce this workflow can do so easily! Run your function for a species of your choice! You can find information on species depth and temperature requirements on [SeaLifeBase](https://www.sealifebase.ca/search.php). Remember, we are thinking about the potential for marine aquaculture, so these species should have some reasonable potential for commercial consumption. 
 
 I chose the American Lobster because it is a highly sought after food that could return lots of profit if grown in the right place.  I used to work at a fish market and it was extremely hard to get lobster because it is so hard to get nowadays!  The temperature range is 11-19 degC and the depth range is sea level to 480 meters deep.
 
@@ -376,10 +349,9 @@ find_suitable_habitat(spp_name = "American lobster", 11, 19, -480, 0)
 
 [^gebco]:GEBCO Compilation Group (2022) GEBCO_2022 Grid (doi:10.5285/e0f0bb80-ab44-2739-e053-6c86abc0289c).
 
-#### SB depth data
-Can I do a quick surfing analysis with the depth data?
-maybe the data is not of high enough resolution, but we should see if we can crop it close to the santa barbara area ... the depth is not at a high enough resolution to infer anything surf related
-
+#### SB depth data... just for fun
+Can I do a SB analysis with the depth data?
+I was going to try this to see bathymetry data for surf spor intel... however the data wasn't high enough resolution.  Oh well it still looks cool at least
 ```{r}
 rast_to_crop <- depth
 lat_up <- 34.522
@@ -396,45 +368,4 @@ sb_depth <- crop(rast_to_crop, extent_of_crop)
 tm_shape(sb_depth) + tm_raster()
 
 ```
-
-#### county economic data 
-maybe we can also visualize county economic data in the same map! Some species are really cheap to purchase, while others are really expensive.  If we really want to understand where the best location would be for aquaculture, we should also understand where the seafood would sell the best based on economic information of that region.  If we want to create a sustainable seafood industry, sourcing local protein will be crucial in reducing transportation emissions. The American Lobster has the potential to be a very expensive commodity, because wild lobster in California runs at a ludicrous price right now.  I would like to add economic information by county (such as median household income) so that we can pick an area of California with lots of rich people who would want to buy lobster. If we can visualize this in the same map it would be useful in picking the right location for aquaculture.  
-
-```{r}
-#devtools::install_github("UrbanInstitute/urbnmapr")
-library(urbnmapr)
-###---- hmmm this package does not contain geometries so idk how to plot it
-
-```
-
-```{r}
-#--- try this package 
-#install.packages("tidycensus")
-library(tidycensus)
-#----had to obtain API key from
-#http://api.census.gov/data/key_signup.html #---actually didn't have to use it haha
-
-options(tigris_use_cache = TRUE)
-
-ca_income <- get_acs(
-  geography = "tract", 
-  variables = "B19013_001",
-  state = "CA", 
-  year = 2020,
-  geometry = TRUE
-)
-
-ca_income
-
-#--- we eventually want to be able to stack the raster with our spatraster from earlier called oyster_habitat
-#--- we have to change the crs, change class??, and then crop it to the same dimensions
-
-tm_shape(ca_income) + tm_fill("estimate")
-```
-
-
-
-
-
-
 
