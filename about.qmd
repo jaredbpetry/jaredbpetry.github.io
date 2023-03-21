@@ -3,8 +3,6 @@ title: About
 image: images/IMG_5726.PNG
 ---
 
-### About Jared
-
 ```{r echo=FALSE}
 knitr::include_graphics("images/wave_pic.png")
 knitr::include_graphics("images/IMG_4922.jpg")

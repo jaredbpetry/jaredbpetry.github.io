@@ -27,10 +27,10 @@ I'm Jared!  I will soon be graduating with a MEDS degree and on my way into a ca
 
 <div class="topbr">
 <p class="custom-subtitle">`r fontawesome::fa("laptop-code", fill = "white", a11y = "sem")` **Masters of Environmental Data Science, 2023**</p>  
-<p class="custom-subtitle2"> - Bren School of Environmental Science and Management, University of California, Santa Barbara</p>
+<p class="custom-subtitle2"> - <em>Bren School of Environmental Science and Management, University of California, Santa Barbara</p>
 
 <p class="custom-subtitle">`r fontawesome::fa("microscope", fill = "white", a11y = "sem")` **BS in Environmental Studies, 2021**</p>  
-<p class="custom-subtitle2"> - University of California Santa Barbara</p>
+<p class="custom-subtitle2"> - <em>University of California Santa Barbara</p>
 </div>
 
 ----------------------------------------------------
@@ -40,21 +40,21 @@ I'm Jared!  I will soon be graduating with a MEDS degree and on my way into a ca
 <div class="topbr">
 <p class="custom-subtitle">`r fontawesome::fa("chart-bar", fill = "white", a11y = "sem")` **Fisheries Technician, 2022**</p>  
 
-<p class="custom-subtitle2"> - Pacific States Marine Fisheries Commission</p>  
+<p class="custom-subtitle2"> - <em>Pacific States Marine Fisheries Commission</p>  
 
 <p class="custom-subtitle">`r fontawesome::fa("fish", fill = "white", a11y = "sem")` **Sustainability Coordinator and Seafood Retailer, 2021**</p>    
 
-<p class="custom-subtitle2"> - Kanaloa Seafood, Santa Barbara</p>
+<p class="custom-subtitle2"> - <em>Kanaloa Seafood, Santa Barbara</p>
 </div>
 
 <div class="topbr">
 <p class="custom-subtitle">`r fontawesome::fa("magnifying-glass", fill = "white", a11y = "sem")` **Biodiversity Analysis Intern, 2021**</p>  
 
-<p class="custom-subtitle2"> - Marine Biodiversity Observation Network</p>  
+<p class="custom-subtitle2"> - <em>Marine Biodiversity Observation Network</p>  
 
 <p class="custom-subtitle">`r fontawesome::fa("tree", fill = "white", a11y = "sem")` **Restoration Intern, 2019-2021**</p>    
 
-<p class="custom-subtitle2"> - Cheadle Center for Biodiversity and Ecological Restoration</p>
+<p class="custom-subtitle2"> - <em>Cheadle Center for Biodiversity and Ecological Restoration</p>
 </div>
 
 
