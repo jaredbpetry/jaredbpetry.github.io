@@ -179,8 +179,8 @@ suitable_depth <- classify(depth_cropped_resampled, rcl = depth_rcl)
 
 #--- Plot what you just made for each 
 
-plot(suitable_depth, col = "blue") 
-plot(suitable_sst, col = "blue")
+raster::plot(suitable_depth, col = "blue") 
+raster::plot(suitable_sst, col = "blue")
 ```
 
 Find locations that satisfy both SST and depth conditions\
