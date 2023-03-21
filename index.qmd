@@ -18,7 +18,7 @@ about:
 ---
 
 ### Thanks for stopping by!
-I'm Jared!  I will soon be graduating with a MEDS degree and on my way into a career in environmental data science.  In my 'about' page, you can learn a little about me.  In 'posts' you can see some example of projects I have been working on.  These will be updated periodically.  Send me an email!  I would love to connect with like-minded professionals.
+I'm Jared!  I will soon be graduating with a MEDS degree and on my way into a career in environmental data science.  In my 'about' page, you can learn a little about me.  If you click on the 'resume' tab at the top, you will be redirected to my full resume. In 'posts' you can see some example of projects I have been working on.  These will be updated periodically.  Send me an email!  I would love to connect with like-minded professionals.
 
 ---------------------------------------------------
 
