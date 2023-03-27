@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jared Petry">
-<meta name="dcterms.date" content="2022-12-01">
+<meta name="dcterms.date" content="2023-02-01">
 <meta name="description" content="“Determining which Exclusive Economic Zones (EEZ) on the West Coast of the US are best suited to developing marine aquaculture for several species of marine organims”">
 
 <title>Jared Petry - Study on Marine Aquaculture with Geospatial Ocean Data</title>
@@ -189,7 +189,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">December 1, 2022</p>
+        <p class="date">February 1, 2023</p>
       </div>
     </div>
       
@@ -207,19 +207,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a>
   <ul class="collapse">
   <li><a href="#utilized-skills" id="toc-utilized-skills" class="nav-link" data-scroll-target="#utilized-skills">Utilized skills:</a></li>
+  </ul></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a>
   <ul class="collapse">
   <li><a href="#sea-surface-temperature" id="toc-sea-surface-temperature" class="nav-link" data-scroll-target="#sea-surface-temperature">Sea Surface Temperature</a></li>
   <li><a href="#bathymetry" id="toc-bathymetry" class="nav-link" data-scroll-target="#bathymetry">Bathymetry</a></li>
   <li><a href="#exclusive-economic-zones" id="toc-exclusive-economic-zones" class="nav-link" data-scroll-target="#exclusive-economic-zones">Exclusive Economic Zones</a></li>
+  </ul></li>
   <li><a href="#prepare-data" id="toc-prepare-data" class="nav-link" data-scroll-target="#prepare-data">Prepare data</a></li>
   <li><a href="#process-data" id="toc-process-data" class="nav-link" data-scroll-target="#process-data">Process data</a></li>
-  <li><a href="#find-suitable-locations" id="toc-find-suitable-locations" class="nav-link" data-scroll-target="#find-suitable-locations">Find suitable locations</a></li>
+  <li><a href="#find-suitable-locations" id="toc-find-suitable-locations" class="nav-link" data-scroll-target="#find-suitable-locations">Find suitable locations</a>
+  <ul class="collapse">
   <li><a href="#determine-the-most-suitable-eez" id="toc-determine-the-most-suitable-eez" class="nav-link" data-scroll-target="#determine-the-most-suitable-eez">Determine the most suitable EEZ</a></li>
-  <li><a href="#visualize-results" id="toc-visualize-results" class="nav-link" data-scroll-target="#visualize-results">Visualize results</a></li>
-  <li><a href="#broaden-the-workflow" id="toc-broaden-the-workflow" class="nav-link" data-scroll-target="#broaden-the-workflow">Broaden the workflow!</a></li>
-  <li><a href="#sb-depth-data-just-for-fun" id="toc-sb-depth-data-just-for-fun" class="nav-link" data-scroll-target="#sb-depth-data-just-for-fun">SB depth data… just for fun</a></li>
   </ul></li>
+  <li><a href="#visualize-results" id="toc-visualize-results" class="nav-link" data-scroll-target="#visualize-results">Visualize results</a></li>
+  <li><a href="#broaden-the-workflow" id="toc-broaden-the-workflow" class="nav-link" data-scroll-target="#broaden-the-workflow">Broaden the workflow!</a>
+  <ul class="collapse">
+  <li><a href="#sb-depth-data-just-for-fun" id="toc-sb-depth-data-just-for-fun" class="nav-link" data-scroll-target="#sb-depth-data-just-for-fun">SB depth data… just for fun</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -254,8 +258,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>map algebra</li>
 </ul>
 </section>
-<section id="data" class="level3">
-<h3 class="anchored" data-anchor-id="data">Data</h3>
+</section>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
 <section id="sea-surface-temperature" class="level4">
 <h4 class="anchored" data-anchor-id="sea-surface-temperature">Sea Surface Temperature</h4>
 <p>We will use average annual sea surface temperature (SST) from the years 2008 to 2012 to characterize the average sea surface temperature within the region. The data we are working with was originally generated from <a href="https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php">NOAA’s 5km Daily Global Satellite Sea Surface Temperature Anomaly v3.1</a>.</p>
@@ -268,15 +273,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h4 class="anchored" data-anchor-id="exclusive-economic-zones">Exclusive Economic Zones</h4>
 <p>We will be designating maritime boundaries using Exclusive Economic Zones off of the west coast of US from <a href="https://www.marineregions.org/eez.php">Marineregions.org</a>.</p>
 </section>
-<section id="prepare-data" class="level4">
-<h4 class="anchored" data-anchor-id="prepare-data">Prepare data</h4>
+</section>
+<section id="prepare-data" class="level2">
+<h2 class="anchored" data-anchor-id="prepare-data">Prepare data</h2>
 <p>To start, we need to load all necessary data and make sure it has the coordinate reference system.</p>
-<p>Read in the shapefile for the West Coast EEZ (<code>wc_regions_clean.shp</code>)</p>
+<p>West coast regions:</p>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>wc_regions <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">here</span>(file_path, <span class="st">"data/wc_regions_clean.shp"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in the shapefile for the West Coast EEZ (`wc_regions_clean.shp`)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>wc_regions <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">here</span>(file_path, <span class="st">"data/wc_regions_clean.shp"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `wc_regions_clean' from data source 
   `/Users/jaredpetry/Documents/MEDS/quarto_website/jaredbpetry.github.io/Posts/marine_aquaculture_geospatial/data/wc_regions_clean.shp' 
@@ -287,42 +292,46 @@ Dimension:     XY
 Bounding box:  xmin: -129.1635 ymin: 30.542 xmax: -117.097 ymax: 49.00031
 Geodetic CRS:  WGS 84</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wc_regions<span class="sc">$</span>geometry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
-<p>Read in sea surface temperature rasters and combine them into a raster stack</p>
+</div>
+<p>Sea surface tmeperature:</p>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># use list.files() to read in our data </span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#--- you start with a bunch of tif files that you want to stack</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#--- I created a list of just the ones starting with the letter "a" to get the sst rasters I wanted</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>file_list <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"data/"</span>, <span class="at">pattern =</span> <span class="st">"^[a]"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#--- now read them in using rast... this will create a spatraster with multiple layers</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#--- (this isn't an actual raster stack so let's see if this works.. terra calls them the same thing)</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>sst_spatrast <span class="ot">&lt;-</span> <span class="fu">rast</span>(file_list)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#--- at this point you get a crs that says epsg4326 AND epsg9122 so we'll have to change that</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in sea surface temperature rasters and combine them into a raster stack</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># use list.files() to read in our data </span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#--- you start with a bunch of tif files that you want to stack</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#--- I created a list of just the ones starting with the letter "a" to get the sst rasters I wanted</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>file_list <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"data/"</span>, <span class="at">pattern =</span> <span class="st">"^[a]"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#--- now read them in using rast... this will create a spatraster with multiple layers</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#--- (this isn't an actual raster stack so let's see if this works.. terra calls them the same thing)</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>sst_spatrast <span class="ot">&lt;-</span> <span class="fu">rast</span>(file_list)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sst_spatrast<span class="sc">$</span>average_annual_sst_2009)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
-<p>Read in bathymetry raster (<code>depth.tif</code>)<br>
-</p>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- at this point you get a crs that says epsg4326 AND epsg9122 so we'll have to change that</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Bathymetry raster:</p>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>depth <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">here</span>(file_path, <span class="st">"data/depth.tif"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in bathymetry raster (`depth.tif`)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>depth <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">here</span>(file_path, <span class="st">"data/depth.tif"</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(depth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
-<p>Check that data are in the same coordinate reference system and reproject any data not in the same projection</p>
+</div>
+<p>Reprojecting data so they match in their coordinate reference system:</p>
 <div class="cell" data-messages="false">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- depth raster is in lon/lat wgs84 EPSG:4326</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#--- wc_regions polygons in wgs84</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#--- sst_spatraster says lon/lat wgs84</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#depth &lt;- st_transform(depth, crs = crs(sst_spatrast))</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.crs</span>(sst_spatrast, <span class="st">"EPSG:4326"</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.crs</span>(depth, <span class="st">"EPSG:4326"</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">st_transform</span>(wc_regions, <span class="at">crs =</span> <span class="fu">crs</span>(depth)) <span class="co">#--- great now they are same crs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- depth raster is in lon/lat wgs84 EPSG:4326</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#--- wc_regions polygons in wgs84</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#--- sst_spatraster says lon/lat wgs84</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#depth &lt;- st_transform(depth, crs = crs(sst_spatrast))</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.crs</span>(sst_spatrast, <span class="st">"EPSG:4326"</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.crs</span>(depth, <span class="st">"EPSG:4326"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">st_transform</span>(wc_regions, <span class="at">crs =</span> <span class="fu">crs</span>(depth)) <span class="co">#--- great now they are same crs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Simple feature collection with 5 features and 5 fields
 Geometry type: MULTIPOLYGON
@@ -344,87 +353,67 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 </section>
-<section id="process-data" class="level4">
-<h4 class="anchored" data-anchor-id="process-data">Process data</h4>
+<section id="process-data" class="level2">
+<h2 class="anchored" data-anchor-id="process-data">Process data</h2>
 <p>Next, we need process the SST and depth data so that they can be combined. In this case the SST and depth data have slightly different resolutions, extents, and positions. We don’t want to change the underlying depth data, so we will need to resample to match the SST data using the nearest neighbor approach.</p>
 <p>Find the mean SST from 2008-2012</p>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mean_sst_spatrast <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">app</span>(sst_spatrast, mean) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mean_sst_spatrast <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">app</span>(sst_spatrast, mean) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Convert SST data from Kelvin to Celsius</p>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mean_sst_C <span class="ot">&lt;-</span> mean_sst_spatrast <span class="sc">-</span> <span class="fl">273.15</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mean_sst_C <span class="ot">&lt;-</span> mean_sst_spatrast <span class="sc">-</span> <span class="fl">273.15</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Crop depth raster to match the extent of the SST raster</p>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>depth_cropped <span class="ot">&lt;-</span> <span class="fu">extend</span>(depth, mean_sst_C)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>depth_cropped <span class="ot">&lt;-</span> <span class="fu">extend</span>(depth, mean_sst_C)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Resample the NPP data to match the resolution of the SST data using the nearest neighbor approach</p>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>depth_cropped_resampled <span class="ot">&lt;-</span> <span class="fu">resample</span>(depth_cropped, mean_sst_C, </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">method =</span> <span class="st">"near"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>depth_cropped_resampled <span class="ot">&lt;-</span> <span class="fu">resample</span>(depth_cropped, mean_sst_C, </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">method =</span> <span class="st">"near"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Check that the depth and SST match in resolution, extent, and coordinate reference system… can the rasters be stacked?</p>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- try to stack the depth raster and the SST raster:</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>depth_and_sst <span class="ot">&lt;-</span> raster<span class="sc">::</span><span class="fu">stack</span>(<span class="fu">c</span>(depth_cropped_resampled, mean_sst_C))</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#--- yes! they can be stacked</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- try to stack the depth raster and the SST raster:</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>depth_and_sst <span class="ot">&lt;-</span> raster<span class="sc">::</span><span class="fu">stack</span>(<span class="fu">c</span>(depth_cropped_resampled, mean_sst_C))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#--- yes! they can be stacked</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="find-suitable-locations" class="level4">
-<h4 class="anchored" data-anchor-id="find-suitable-locations">Find suitable locations</h4>
+<section id="find-suitable-locations" class="level2">
+<h2 class="anchored" data-anchor-id="find-suitable-locations">Find suitable locations</h2>
 <p>In order to find suitable locations for marine aquaculture, we’ll need to find locations that are suitable in terms of both SST and depth.</p>
 <p>Reclassify SST and depth data into locations that are suitable for oysters. We will do this by setting suitable values to <code>1</code> and unsuitable values to <code>NA</code></p>
+<p>The first plot will show suitable depth for oysters and the second will showsuitable sea surface temperature.</p>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- for oysters, we need 11 &lt;= sst(C) &lt;= 30</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#------ and 0 &lt;= depth &lt;= 70</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#--- set up reclassification matrices </span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>depth_rcl <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">8000</span>, <span class="sc">-</span><span class="dv">70</span>, <span class="cn">NA</span>,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                    <span class="sc">-</span><span class="dv">70</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">0</span>, <span class="dv">5000</span>, <span class="cn">NA</span>), </span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>sst_rcl <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">11</span>, <span class="cn">NA</span>, </span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">11</span>, <span class="dv">30</span>, <span class="dv">1</span>, </span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">30</span>, <span class="cn">Inf</span>, <span class="cn">NA</span>), </span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co">#--- use these to classify your rasters</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>suitable_sst <span class="ot">&lt;-</span> <span class="fu">classify</span>(mean_sst_C, <span class="at">rcl =</span> sst_rcl)</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>suitable_depth <span class="ot">&lt;-</span> <span class="fu">classify</span>(depth_cropped_resampled, <span class="at">rcl =</span> depth_rcl)</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co">#--- Plot what you just made for each </span></span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>raster<span class="sc">::</span><span class="fu">plot</span>(suitable_depth, <span class="at">col =</span> <span class="st">"blue"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- for oysters, we need 11 &lt;= sst(C) &lt;= 30</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#------ and 0 &lt;= depth &lt;= 70</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">#--- set up reclassification matrices </span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>depth_rcl <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">8000</span>, <span class="sc">-</span><span class="dv">70</span>, <span class="cn">NA</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>                    <span class="sc">-</span><span class="dv">70</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">0</span>, <span class="dv">5000</span>, <span class="cn">NA</span>), </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>sst_rcl <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">11</span>, <span class="cn">NA</span>, </span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">11</span>, <span class="dv">30</span>, <span class="dv">1</span>, </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">30</span>, <span class="cn">Inf</span>, <span class="cn">NA</span>), </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">#--- use these to classify your rasters</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>suitable_sst <span class="ot">&lt;-</span> <span class="fu">classify</span>(mean_sst_C, <span class="at">rcl =</span> sst_rcl)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>suitable_depth <span class="ot">&lt;-</span> <span class="fu">classify</span>(depth_cropped_resampled, <span class="at">rcl =</span> depth_rcl)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co">#--- Plot what you just made for each </span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>raster<span class="sc">::</span><span class="fu">plot</span>(suitable_depth, <span class="at">col =</span> <span class="st">"blue"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>raster<span class="sc">::</span><span class="fu">plot</span>(suitable_sst, <span class="at">col =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>raster<span class="sc">::</span><span class="fu">plot</span>(suitable_sst, <span class="at">col =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid" width="672"></p>
 </div>
@@ -432,66 +421,56 @@ Geodetic CRS:  WGS 84
 <p>Find locations that satisfy both SST and depth conditions<br>
 - create an overlay using the <code>lapp()</code> function multiplying cell values - we will use <code>terra::lapp()</code></p>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- we want to multiply cell values so that with any NA in either layer, result will also be NA, with two 1s, the result will also be a 1</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>fun <span class="ot">=</span> <span class="cf">function</span>(x,y) {</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x<span class="sc">*</span>y)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>oyster_habitat <span class="ot">&lt;-</span> <span class="fu">lapp</span>(<span class="fu">c</span>(suitable_depth, suitable_sst), fun)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">#--- plot(oyster_habitat)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- we want to multiply cell values so that with any NA in either layer, result will also be NA, with two 1s, the result will also be a 1</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>fun <span class="ot">=</span> <span class="cf">function</span>(x,y) {</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x<span class="sc">*</span>y)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>oyster_habitat <span class="ot">&lt;-</span> <span class="fu">lapp</span>(<span class="fu">c</span>(suitable_depth, suitable_sst), fun)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(oyster_habitat, <span class="at">col =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
-</section>
+</div>
 <section id="determine-the-most-suitable-eez" class="level4">
 <h4 class="anchored" data-anchor-id="determine-the-most-suitable-eez">Determine the most suitable EEZ</h4>
 <p>We want to determine the total suitable area within each EEZ in order to rank zones by priority. To do so, we need to find the total area of suitable locations within each EEZ.</p>
 <ul>
 <li>select suitable cells within West Coast EEZs</li>
 <li>find area of grid cells</li>
-<li>find the total suitable area within each EEZ
-<ul>
-<li>hint: it might be helpful to rasterize the EEZ data</li>
-</ul></li>
-<li>find the percentage of each zone that is suitable
-<ul>
-<li>hint it might be helpful to join the suitable area by region onto the EEZ vector data</li>
-</ul></li>
+<li>find the total suitable area within each EEZ</li>
+<li>find the percentage of each zone that is suitable</li>
 </ul>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- remember, our eez regions are the wc_regions we reprojected earlier</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># select suitable cells within West Coast EEZs</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#----first rasterize the wc_regions data to create rast_eez</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>rast_regions <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rasterize</span>(wc_regions, oyster_habitat, <span class="at">field =</span> <span class="st">"rgn"</span>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># compute the area covered by the raster cells of suitable habitat</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">#--- terra::cellSize() will compute the area covered by each individual cell</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>area_habitat <span class="ot">&lt;-</span> <span class="fu">cellSize</span>(oyster_habitat, <span class="at">unit =</span> <span class="st">"km"</span>, <span class="at">transform =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">#--- create mask that will display the suitable habitat separated into the different eez regions</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>mask <span class="ot">&lt;-</span> <span class="fu">mask</span>(rast_regions, oyster_habitat)</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co">#--- terra::zonal() will compute summaries of values of a spatraster defined by the "zones" of a different spatraster.  We will use this to compute the suitable area </span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>habitat_area <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">zonal</span>(area_habitat, mask, sum)</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#--- use left_join() to create a dataframe that contains both the suitable area by region and the percentage of habitat area out of the total area for that region</span></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>habitat_by_region_df <span class="ot">&lt;-</span> <span class="fu">left_join</span>(wc_regions, habitat_area, <span class="at">by =</span> <span class="st">"rgn"</span>)  </span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>habitat_by_region_df<span class="sc">$</span>area_percent <span class="ot">=</span> (habitat_by_region_df<span class="sc">$</span>area <span class="sc">/</span> habitat_by_region_df<span class="sc">$</span>area_km2)<span class="sc">*</span><span class="dv">100</span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co">#--- show results in a table</span></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>print_df <span class="ot">&lt;-</span> habitat_by_region_df <span class="sc">|&gt;</span> </span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  terra<span class="sc">::</span><span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(rgn, area, area_percent) <span class="sc">|&gt;</span> </span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="st">"Oyster Habitat Area"</span> <span class="ot">=</span> area, </span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>                <span class="st">"EEZ region"</span> <span class="ot">=</span> rgn, </span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Habitat Percent of Total Region Area"</span> <span class="ot">=</span> area_percent) </span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>print_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- remember, our eez regions are the wc_regions we reprojected earlier</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># select suitable cells within West Coast EEZs</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#----first rasterize the wc_regions data to create rast_eez</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>rast_regions <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rasterize</span>(wc_regions, oyster_habitat, <span class="at">field =</span> <span class="st">"rgn"</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># compute the area covered by the raster cells of suitable habitat</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#--- terra::cellSize() will compute the area covered by each individual cell</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>area_habitat <span class="ot">&lt;-</span> <span class="fu">cellSize</span>(oyster_habitat, <span class="at">unit =</span> <span class="st">"km"</span>, <span class="at">transform =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#--- create mask that will display the suitable habitat separated into the different eez regions</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>mask <span class="ot">&lt;-</span> <span class="fu">mask</span>(rast_regions, oyster_habitat)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">#--- terra::zonal() will compute summaries of values of a spatraster defined by the "zones" of a different spatraster.  We will use this to compute the suitable area </span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>habitat_area <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">zonal</span>(area_habitat, mask, sum)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co">#--- use left_join() to create a dataframe that contains both the suitable area by region and the percentage of habitat area out of the total area for that region</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>habitat_by_region_df <span class="ot">&lt;-</span> <span class="fu">left_join</span>(wc_regions, habitat_area, <span class="at">by =</span> <span class="st">"rgn"</span>)  </span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>habitat_by_region_df<span class="sc">$</span>area_percent <span class="ot">=</span> (habitat_by_region_df<span class="sc">$</span>area <span class="sc">/</span> habitat_by_region_df<span class="sc">$</span>area_km2)<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co">#--- show results in a table</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>print_df <span class="ot">&lt;-</span> habitat_by_region_df <span class="sc">|&gt;</span> </span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>  terra<span class="sc">::</span><span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(rgn, area, area_percent) <span class="sc">|&gt;</span> </span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="st">"Oyster Habitat Area"</span> <span class="ot">=</span> area, </span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>                <span class="st">"EEZ region"</span> <span class="ot">=</span> rgn, </span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Habitat Percent of Total Region Area"</span> <span class="ot">=</span> area_percent) </span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>print_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           EEZ region Oyster Habitat Area Habitat Percent of Total Region Area
 1              Oregon           1074.2720                            0.5968374
@@ -502,8 +481,9 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 </section>
-<section id="visualize-results" class="level4">
-<h4 class="anchored" data-anchor-id="visualize-results">Visualize results</h4>
+</section>
+<section id="visualize-results" class="level2">
+<h2 class="anchored" data-anchor-id="visualize-results">Visualize results</h2>
 <p>Now that we have results, we need to present them!</p>
 <p>We will create the following maps:</p>
 <ul>
@@ -511,103 +491,94 @@ Geodetic CRS:  WGS 84
 <li>percent suitable area by region</li>
 </ul>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- map of total area </span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>area_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(habitat_by_region_df) <span class="sc">+</span> </span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"area"</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">palette =</span> <span class="fu">rev</span>(<span class="fu">hcl.colors</span>(<span class="dv">3</span>, <span class="st">"BluGrn"</span>)),</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">title =</span> <span class="st">"Habitat Area (square km)"</span>,</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">legend.reverse =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(oyster_habitat) <span class="sc">+</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="at">title =</span> <span class="st">"Habitat"</span>) <span class="sc">+</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">main.title.size =</span> <span class="dv">1</span>,</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">main.title =</span> <span class="st">"Suitable habitat area for oysters by EEZ region"</span>)</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>area_map</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- map of total area </span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>area_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(habitat_by_region_df) <span class="sc">+</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"area"</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">palette =</span> <span class="fu">rev</span>(<span class="fu">hcl.colors</span>(<span class="dv">3</span>, <span class="st">"BluGrn"</span>)),</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">title =</span> <span class="st">"Habitat Area (square km)"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">legend.reverse =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(oyster_habitat) <span class="sc">+</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="at">title =</span> <span class="st">"Habitat"</span>) <span class="sc">+</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">main.title.size =</span> <span class="dv">1</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">main.title =</span> <span class="st">"Suitable habitat area for oysters by EEZ region"</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>area_map</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- map of percentage</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>percent_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(habitat_by_region_df) <span class="sc">+</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"area_percent"</span>,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">palette =</span> <span class="fu">rev</span>(<span class="fu">hcl.colors</span>(<span class="dv">3</span>, <span class="st">"BluGrn"</span>)),</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">title =</span> <span class="st">"Percentage"</span>) <span class="sc">+</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(oyster_habitat) <span class="sc">+</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="at">title =</span> <span class="st">"Habitat"</span>) <span class="sc">+</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">main.title.size =</span> <span class="dv">1</span>,</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">main.title =</span> <span class="st">"Suitable habitat for oysters: percentage of total EEZ region"</span>,</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">frame =</span> T)</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>percent_map</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--- map of percentage</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>percent_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(habitat_by_region_df) <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"area_percent"</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">palette =</span> <span class="fu">rev</span>(<span class="fu">hcl.colors</span>(<span class="dv">3</span>, <span class="st">"BluGrn"</span>)),</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">title =</span> <span class="st">"Percentage"</span>) <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(oyster_habitat) <span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="at">title =</span> <span class="st">"Habitat"</span>) <span class="sc">+</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">main.title.size =</span> <span class="dv">1</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">main.title =</span> <span class="st">"Suitable habitat for oysters: percentage of total EEZ region"</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">frame =</span> T)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>percent_map</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="broaden-the-workflow" class="level4">
-<h4 class="anchored" data-anchor-id="broaden-the-workflow">Broaden the workflow!</h4>
+<section id="broaden-the-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="broaden-the-workflow">Broaden the workflow!</h2>
 <p>Now that we’ve worked through the suitable habitat areas for one group of species, let’s update our workflow to work for other species. We will do this by creating a function that would allow you to reproduce your results for other species. It will be able to do the following:</p>
 <ul>
 <li>accept temperature and depth ranges and species name as inputs</li>
 <li>create maps of total suitable area and percent suitable area per EEZ with the species name in the title</li>
 </ul>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>find_suitable_habitat <span class="ot">&lt;-</span> <span class="cf">function</span>(spp_name, temp_min, temp_max, depth_min, depth_max) {</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  depth_rcl <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, depth_min, <span class="cn">NA</span>, </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                               depth_min, depth_max, <span class="dv">1</span>, </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                               depth_max, <span class="cn">Inf</span>, <span class="cn">NA</span>), </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                              <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  sst_rcl <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, temp_min, <span class="cn">NA</span>, </span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                             temp_min, temp_max, <span class="dv">1</span>, </span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>                             temp_max, <span class="cn">Inf</span>, <span class="cn">NA</span>), </span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>                           <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  suitable_sst <span class="ot">&lt;-</span> <span class="fu">classify</span>(mean_sst_C, <span class="at">rcl =</span> sst_rcl)</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  suitable_depth <span class="ot">&lt;-</span> <span class="fu">classify</span>(depth_cropped_resampled, <span class="at">rcl =</span> depth_rcl)</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  oyster_habitat <span class="ot">&lt;-</span> <span class="fu">lapp</span>(<span class="fu">c</span>(suitable_depth, suitable_sst), fun)</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  rast_regions <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rasterize</span>(wc_regions, oyster_habitat, <span class="at">field =</span> <span class="st">"rgn"</span>)</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  area_suitable <span class="ot">&lt;-</span> <span class="fu">cellSize</span>(oyster_habitat, <span class="at">unit =</span> <span class="st">"km"</span>, <span class="at">transform =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  mask <span class="ot">&lt;-</span> <span class="fu">mask</span>(rast_regions, oyster_habitat)</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  area_per_zone <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">zonal</span>(area_suitable, mask, sum)</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  df_habitat_rgn <span class="ot">&lt;-</span> <span class="fu">left_join</span>(wc_regions, area_per_zone, <span class="at">by =</span> <span class="st">"rgn"</span>) </span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  df_habitat_rgn<span class="sc">$</span>area_percent <span class="ot">&lt;-</span> (df_habitat_rgn<span class="sc">$</span>area <span class="sc">/</span> df_habitat_rgn<span class="sc">$</span>area_km2)<span class="sc">*</span><span class="dv">100</span></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--- map of total area </span></span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  area_and_percent_map <span class="ot">&lt;-</span> <span class="fu">tmap_arrange</span>(<span class="fu">tm_shape</span>(df_habitat_rgn) <span class="sc">+</span> </span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"area"</span>,</span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>                <span class="at">palette =</span> <span class="fu">rev</span>(<span class="fu">hcl.colors</span>(<span class="dv">3</span>, <span class="st">"BluGrn"</span>)),</span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>                <span class="at">title =</span> <span class="st">"Area(km sq.)"</span>,</span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>                <span class="at">legend.reverse =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_shape</span>(oyster_habitat) <span class="sc">+</span></span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_raster</span>(<span class="at">title =</span> <span class="st">"Habitat"</span>) <span class="sc">+</span></span>
-<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>              <span class="at">legend.title.size =</span> <span class="fl">0.8</span>,</span>
-<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>              <span class="at">legend.text.size =</span> <span class="fl">0.5</span>,</span>
-<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>              <span class="at">main.title.size =</span> <span class="fl">0.8</span>,</span>
-<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>              <span class="at">main.title =</span> <span class="fu">paste0</span>(spp_name, <span class="st">" habitat by EEZ region"</span>)),</span>
-<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>    percent_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(df_habitat_rgn) <span class="sc">+</span></span>
-<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"area_percent"</span>,</span>
-<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>                  <span class="at">palette =</span> <span class="fu">rev</span>(<span class="fu">hcl.colors</span>(<span class="dv">3</span>, <span class="st">"BluGrn"</span>)),</span>
-<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>                  <span class="at">title =</span> <span class="st">"Percentage"</span>) <span class="sc">+</span></span>
-<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_shape</span>(oyster_habitat) <span class="sc">+</span></span>
-<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_raster</span>(<span class="at">title =</span> <span class="st">"Habitat"</span>) <span class="sc">+</span></span>
-<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>              <span class="at">legend.title.size =</span> <span class="fl">0.8</span>,</span>
-<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>              <span class="at">legend.text.size =</span> <span class="fl">0.5</span>,</span>
-<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>              <span class="at">main.title.size =</span> <span class="fl">0.8</span>,</span>
-<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>              <span class="at">main.title =</span> <span class="fu">paste0</span>(spp_name, <span class="st">" habitat percentage of EEZ region"</span>),</span>
-<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>              <span class="at">frame =</span> T))</span>
-<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>  area_and_percent_map</span>
-<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a><span class="co">#--- test the function (arbitrary values) </span></span>
-<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a><span class="fu">find_suitable_habitat</span>(<span class="at">spp_name =</span> <span class="st">"spp of interest"</span>, <span class="dv">5</span>, <span class="dv">15</span>, <span class="sc">-</span><span class="dv">100</span>, <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>find_suitable_habitat <span class="ot">&lt;-</span> <span class="cf">function</span>(spp_name, temp_min, temp_max, depth_min, depth_max) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  depth_rcl <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, depth_min, <span class="cn">NA</span>, </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                               depth_min, depth_max, <span class="dv">1</span>, </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                               depth_max, <span class="cn">Inf</span>, <span class="cn">NA</span>), </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                              <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  sst_rcl <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, temp_min, <span class="cn">NA</span>, </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                             temp_min, temp_max, <span class="dv">1</span>, </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                             temp_max, <span class="cn">Inf</span>, <span class="cn">NA</span>), </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>                           <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  suitable_sst <span class="ot">&lt;-</span> <span class="fu">classify</span>(mean_sst_C, <span class="at">rcl =</span> sst_rcl)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  suitable_depth <span class="ot">&lt;-</span> <span class="fu">classify</span>(depth_cropped_resampled, <span class="at">rcl =</span> depth_rcl)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  oyster_habitat <span class="ot">&lt;-</span> <span class="fu">lapp</span>(<span class="fu">c</span>(suitable_depth, suitable_sst), fun)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  rast_regions <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rasterize</span>(wc_regions, oyster_habitat, <span class="at">field =</span> <span class="st">"rgn"</span>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  area_suitable <span class="ot">&lt;-</span> <span class="fu">cellSize</span>(oyster_habitat, <span class="at">unit =</span> <span class="st">"km"</span>, <span class="at">transform =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  mask <span class="ot">&lt;-</span> <span class="fu">mask</span>(rast_regions, oyster_habitat)</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  area_per_zone <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">zonal</span>(area_suitable, mask, sum)</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  df_habitat_rgn <span class="ot">&lt;-</span> <span class="fu">left_join</span>(wc_regions, area_per_zone, <span class="at">by =</span> <span class="st">"rgn"</span>) </span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  df_habitat_rgn<span class="sc">$</span>area_percent <span class="ot">&lt;-</span> (df_habitat_rgn<span class="sc">$</span>area <span class="sc">/</span> df_habitat_rgn<span class="sc">$</span>area_km2)<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--- map of total area </span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>  area_and_percent_map <span class="ot">&lt;-</span> <span class="fu">tmap_arrange</span>(<span class="fu">tm_shape</span>(df_habitat_rgn) <span class="sc">+</span> </span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"area"</span>,</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>                <span class="at">palette =</span> <span class="fu">rev</span>(<span class="fu">hcl.colors</span>(<span class="dv">3</span>, <span class="st">"BluGrn"</span>)),</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>                <span class="at">title =</span> <span class="st">"Area(km sq.)"</span>,</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>                <span class="at">legend.reverse =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_shape</span>(oyster_habitat) <span class="sc">+</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_raster</span>(<span class="at">title =</span> <span class="st">"Habitat"</span>) <span class="sc">+</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>              <span class="at">legend.title.size =</span> <span class="fl">0.8</span>,</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>              <span class="at">legend.text.size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>              <span class="at">main.title.size =</span> <span class="fl">0.8</span>,</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>              <span class="at">main.title =</span> <span class="fu">paste0</span>(spp_name, <span class="st">" habitat by EEZ region"</span>)),</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>    percent_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(df_habitat_rgn) <span class="sc">+</span></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">"area_percent"</span>,</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>                  <span class="at">palette =</span> <span class="fu">rev</span>(<span class="fu">hcl.colors</span>(<span class="dv">3</span>, <span class="st">"BluGrn"</span>)),</span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>                  <span class="at">title =</span> <span class="st">"Percentage"</span>) <span class="sc">+</span></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_shape</span>(oyster_habitat) <span class="sc">+</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_raster</span>(<span class="at">title =</span> <span class="st">"Habitat"</span>) <span class="sc">+</span></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>              <span class="at">legend.title.size =</span> <span class="fl">0.8</span>,</span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>              <span class="at">legend.text.size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>              <span class="at">main.title.size =</span> <span class="fl">0.8</span>,</span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>              <span class="at">main.title =</span> <span class="fu">paste0</span>(spp_name, <span class="st">" habitat percentage of EEZ region"</span>),</span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a>              <span class="at">frame =</span> T))</span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a>  area_and_percent_map</span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a><span class="co">#--- test the function (arbitrary values) </span></span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a><span class="fu">find_suitable_habitat</span>(<span class="at">spp_name =</span> <span class="st">"spp of interest"</span>, <span class="dv">5</span>, <span class="dv">15</span>, <span class="sc">-</span><span class="dv">100</span>, <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -615,42 +586,34 @@ Geodetic CRS:  WGS 84
 <p>Anyone who wants to reproduce this workflow can do so easily! Run your function for a species of your choice! You can find information on species depth and temperature requirements on <a href="https://www.sealifebase.ca/search.php">SeaLifeBase</a>. Remember, we are thinking about the potential for marine aquaculture, so these species should have some reasonable potential for commercial consumption.</p>
 <p>I chose the American Lobster because it is a highly sought after food that could return lots of profit if grown in the right place. I used to work at a fish market and it was extremely hard to get lobster because it is so hard to get nowadays! The temperature range is 11-19 degC and the depth range is sea level to 480 meters deep.</p>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">find_suitable_habitat</span>(<span class="at">spp_name =</span> <span class="st">"American lobster"</span>, <span class="dv">11</span>, <span class="dv">19</span>, <span class="sc">-</span><span class="dv">480</span>, <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">find_suitable_habitat</span>(<span class="at">spp_name =</span> <span class="st">"American lobster"</span>, <span class="dv">11</span>, <span class="dv">19</span>, <span class="sc">-</span><span class="dv">480</span>, <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section>
 <section id="sb-depth-data-just-for-fun" class="level4">
 <h4 class="anchored" data-anchor-id="sb-depth-data-just-for-fun">SB depth data… just for fun</h4>
-<p>Can I do a SB analysis with the depth data? I was going to try this to see bathymetry data for surf spor intel… however the data wasn’t high enough resolution. Oh well it still looks cool at least</p>
+<p>Can I do a SB analysis with the depth data? I was going to try this to see bathymetry data for surf spot intel… however the data wasn’t high enough resolution. Oh well it still looks cool at least</p>
 <div class="cell">
-<details>
-<summary>Show Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>rast_to_crop <span class="ot">&lt;-</span> depth</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>lat_up <span class="ot">&lt;-</span> <span class="fl">34.522</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>lat_down <span class="ot">&lt;-</span> <span class="fl">34.085</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>lon_up <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">120.223</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>lon_down <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">119.171</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#--- formatting for ext(): -180, 180, -90, 90 (xmin, xmax, ymin, ymax)</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>extent_of_crop <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">ext</span>(lon_up, lon_down, lat_down, lat_up)</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>sb_depth <span class="ot">&lt;-</span> <span class="fu">crop</span>(rast_to_crop, extent_of_crop)</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">#--- also crop the basemap to the same thing</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">#sb_basemap &lt;- extend(wc_regions, sb_depth)</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(sb_depth) <span class="sc">+</span> <span class="fu">tm_raster</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>rast_to_crop <span class="ot">&lt;-</span> depth</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>lat_up <span class="ot">&lt;-</span> <span class="fl">34.522</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>lat_down <span class="ot">&lt;-</span> <span class="fl">34.085</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>lon_up <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">120.223</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>lon_down <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">119.171</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">#--- formatting for ext(): -180, 180, -90, 90 (xmin, xmax, ymin, ymax)</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>extent_of_crop <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">ext</span>(lon_up, lon_down, lat_down, lat_up)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>sb_depth <span class="ot">&lt;-</span> <span class="fu">crop</span>(rast_to_crop, extent_of_crop)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#--- also crop the basemap to the same thing</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#sb_basemap &lt;- extend(wc_regions, sb_depth)</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(sb_depth) <span class="sc">+</span> <span class="fu">tm_raster</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
 
-</section>
 </section>
 </section>
 

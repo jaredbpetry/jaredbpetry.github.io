@@ -204,7 +204,7 @@ fun = function(x,y) {
 }
 
 oyster_habitat <- lapp(c(suitable_depth, suitable_sst), fun)
-#--- plot(oyster_habitat)
+plot(oyster_habitat, col = "blue")
 ```
 
 #### Determine the most suitable EEZ 
@@ -213,10 +213,8 @@ We want to determine the total suitable area within each EEZ in order to rank zo
 -   select suitable cells within West Coast EEZs
 -   find area of grid cells
 -   find the total suitable area within each EEZ
-    -   hint: it might be helpful to rasterize the EEZ data
 -   find the percentage of each zone that is suitable
-    -   hint it might be helpful to join the suitable area by region onto the EEZ vector data
-    
+
 ```{r include=TRUE}
 #--- remember, our eez regions are the wc_regions we reprojected earlier
 
