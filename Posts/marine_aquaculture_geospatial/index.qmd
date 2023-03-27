@@ -27,7 +27,6 @@ code-block-border-left: "#6B5A75"
 editor: visual
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 file_path <- getwd()
@@ -36,12 +35,14 @@ file_path <- getwd()
 ```{r, echo=FALSE}
 knitr::include_graphics("images/oysters.png", dpi = 100)
 ```
-source: https://fieldnotesjournal.org/new-blog/apearlintheroughoysteraquacultureandhowitworks
 
+source: https://fieldnotesjournal.org/new-blog/apearlintheroughoysteraquacultureandhowitworks
 
 ## Overview
 
-Marine aquaculture has the potential to play an important role in the global food supply as a more sustainable protein option than land-based meat production.[^hall] [Gentry et al.](https://www.nature.com/articles/s41559-017-0257-9) 
+Marine aquaculture has the potential to play an important role in the global food supply as a more sustainable protein option than land-based meat production.[^1] [Gentry et al.](https://www.nature.com/articles/s41559-017-0257-9)
+
+[^1]: Hall, S. J., Delaporte, A., Phillips, M. J., Beveridge, M. & O'Keefe, M. Blue Frontiers: Managing the Environmental Costs of Aquaculture (The WorldFish Center, Penang, Malaysia, 2011).
 
 For this small project, we will determine which Exclusive Economic Zones (EEZ) on the West Coast of the US are best suited to developing marine aquaculture for several species of oysters.
 
@@ -50,7 +51,8 @@ Based on previous research, we know that oysters needs the following conditions 
 -   sea surface temperature: 11-30 deg C
 -   depth: 0-70 meters below sea level
 
-##### Utilized skills: 
+##### Utilized skills:
+
 -   combining vector raster data
 -   resampling raster data
 -   masking raster data
@@ -59,18 +61,23 @@ Based on previous research, we know that oysters needs the following conditions 
 ## Data
 
 #### Sea Surface Temperature
+
 We will use average annual sea surface temperature (SST) from the years 2008 to 2012 to characterize the average sea surface temperature within the region. The data we are working with was originally generated from [NOAA's 5km Daily Global Satellite Sea Surface Temperature Anomaly v3.1](https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php).
 
 #### Bathymetry
-To characterize the depth of the ocean we will use the [General Bathymetric Chart of the Oceans (GEBCO)](https://www.gebco.net/data_and_products/gridded_bathymetry_data/#area).[^gebco]
+
+To characterize the depth of the ocean we will use the [General Bathymetric Chart of the Oceans (GEBCO)](https://www.gebco.net/data_and_products/gridded_bathymetry_data/#area).[^2]
+
+[^2]: GEBCO Compilation Group (2022) GEBCO_2022 Grid (doi:10.5285/e0f0bb80-ab44-2739-e053-6c86abc0289c).
 
 #### Exclusive Economic Zones
+
 We will be designating maritime boundaries using Exclusive Economic Zones off of the west coast of US from [Marineregions.org](https://www.marineregions.org/eez.php).
 
-## Prepare data 
+## Prepare data
 
-To start, we need to load all necessary data and make sure it has the coordinate reference system. 
-    
+To start, we need to load all necessary data and make sure it has the coordinate reference system.
+
 ```{r include=FALSE}
 library(terra) 
 library(dplyr) 
@@ -89,6 +96,7 @@ library(tidyverse)
 ```
 
 West coast regions:
+
 ```{r}
 # Read in the shapefile for the West Coast EEZ (`wc_regions_clean.shp`)
 
@@ -97,6 +105,7 @@ plot(wc_regions$geometry)
 ```
 
 Sea surface tmeperature:
+
 ```{r}
 # Read in sea surface temperature rasters and combine them into a raster stack
 # use list.files() to read in our data 
@@ -111,6 +120,7 @@ plot(sst_spatrast$average_annual_sst_2009)
 ```
 
 Bathymetry raster:
+
 ```{r}
 # Read in bathymetry raster (`depth.tif`)
 depth <- rast(here(file_path, "data/depth.tif"))
@@ -118,6 +128,7 @@ plot(depth)
 ```
 
 Reprojecting data so they match in their coordinate reference system:
+
 ```{r include=TRUE, warning=FALSE, messages=FALSE}
 #--- depth raster is in lon/lat wgs84 EPSG:4326
 #--- wc_regions polygons in wgs84
@@ -129,45 +140,51 @@ set.crs(depth, "EPSG:4326")
 st_transform(wc_regions, crs = crs(depth)) #--- great now they are same crs
 ```
 
-## Process data 
+## Process data
 
-Next, we need process the SST and depth data so that they can be combined. In this case the SST and depth data have slightly different resolutions, extents, and positions. We don't want to change the underlying depth data, so we will need to resample to match the SST data using the nearest neighbor approach. 
+Next, we need process the SST and depth data so that they can be combined. In this case the SST and depth data have slightly different resolutions, extents, and positions. We don't want to change the underlying depth data, so we will need to resample to match the SST data using the nearest neighbor approach.
 
 Find the mean SST from 2008-2012
+
 ```{r}
 mean_sst_spatrast <- terra::app(sst_spatrast, mean) 
 ```
 
 Convert SST data from Kelvin to Celsius
+
 ```{r}
 mean_sst_C <- mean_sst_spatrast - 273.15
 ```
 
 Crop depth raster to match the extent of the SST raster
+
 ```{r}
 depth_cropped <- extend(depth, mean_sst_C)
 ```
 
 Resample the NPP data to match the resolution of the SST data using the nearest neighbor approach
+
 ```{r}
 depth_cropped_resampled <- resample(depth_cropped, mean_sst_C, 
                                     method = "near")
 ```
 
 Check that the depth and SST match in resolution, extent, and coordinate reference system... can the rasters be stacked?
+
 ```{r include=TRUE}
 #--- try to stack the depth raster and the SST raster:
 depth_and_sst <- raster::stack(c(depth_cropped_resampled, mean_sst_C))
 #--- yes! they can be stacked
 ```
 
-## Find suitable locations 
+## Find suitable locations
 
 In order to find suitable locations for marine aquaculture, we'll need to find locations that are suitable in terms of both SST and depth.
 
 Reclassify SST and depth data into locations that are suitable for oysters. We will do this by setting suitable values to `1` and unsuitable values to `NA`
 
 The first plot will show suitable depth for oysters and the second will showsuitable sea surface temperature.
+
 ```{r include=TRUE}
 #--- for oysters, we need 11 <= sst(C) <= 30
 #------ and 0 <= depth <= 70
@@ -197,9 +214,8 @@ raster::plot(suitable_sst, col = "blue")
 ```
 
 Find locations that satisfy both SST and depth conditions\
-    - create an overlay using the `lapp()` function multiplying cell values
-    - we will use `terra::lapp()`
-    
+- create an overlay using the `lapp()` function multiplying cell values - we will use `terra::lapp()`
+
 ```{r}
 #--- we want to multiply cell values so that with any NA in either layer, result will also be NA, with two 1s, the result will also be a 1
 
@@ -211,7 +227,8 @@ oyster_habitat <- lapp(c(suitable_depth, suitable_sst), fun)
 plot(oyster_habitat, col = "blue")
 ```
 
-#### Determine the most suitable EEZ 
+#### Determine the most suitable EEZ
+
 We want to determine the total suitable area within each EEZ in order to rank zones by priority. To do so, we need to find the total area of suitable locations within each EEZ.
 
 -   select suitable cells within West Coast EEZs
@@ -249,8 +266,8 @@ print_df <- habitat_by_region_df |>
                 "Habitat Percent of Total Region Area" = area_percent) 
 print_df
 ```
-    
-## Visualize results 
+
+## Visualize results
 
 Now that we have results, we need to present them!
 
@@ -288,7 +305,7 @@ tm_layout(legend.outside = TRUE,
 percent_map
 ```
 
-## Broaden the workflow! 
+## Broaden the workflow!
 
 Now that we've worked through the suitable habitat areas for one group of species, let's update our workflow to work for other species. We will do this by creating a function that would allow you to reproduce your results for other species. It will be able to do the following:
 
@@ -346,25 +363,18 @@ find_suitable_habitat(spp_name = "spp of interest", 5, 15, -100, 0)
 
 ```
 
+Anyone who wants to reproduce this workflow can do so easily! Run your function for a species of your choice! You can find information on species depth and temperature requirements on [SeaLifeBase](https://www.sealifebase.ca/search.php). Remember, we are thinking about the potential for marine aquaculture, so these species should have some reasonable potential for commercial consumption.
 
-Anyone who wants to reproduce this workflow can do so easily! Run your function for a species of your choice! You can find information on species depth and temperature requirements on [SeaLifeBase](https://www.sealifebase.ca/search.php). Remember, we are thinking about the potential for marine aquaculture, so these species should have some reasonable potential for commercial consumption. 
-
-I chose the American Lobster because it is a highly sought after food that could return lots of profit if grown in the right place.  I used to work at a fish market and it was extremely hard to get lobster because it is so hard to get nowadays!  The temperature range is 11-19 degC and the depth range is sea level to 480 meters deep.
+I chose the American Lobster because it is a highly sought after food that could return lots of profit if grown in the right place. I used to work at a fish market and it was extremely hard to get lobster because it is so hard to get nowadays! The temperature range is 11-19 degC and the depth range is sea level to 480 meters deep.
 
 ```{r}
 find_suitable_habitat(spp_name = "American lobster", 11, 19, -480, 0)
 ```
 
-
-[^hall]:Hall, S. J., Delaporte, A., Phillips, M. J., Beveridge, M. & O’Keefe, M. Blue Frontiers: Managing the Environmental Costs of Aquaculture (The WorldFish Center, Penang, Malaysia, 2011). 
-
-[^gentry]:Gentry, R. R., Froehlich, H. E., Grimm, D., Kareiva, P., Parke, M., Rust, M., Gaines, S. D., & Halpern, B. S. Mapping the global potential for marine aquaculture. *Nature Ecology & Evolution*, 1, 1317-1324 (2017).
-
-[^gebco]:GEBCO Compilation Group (2022) GEBCO_2022 Grid (doi:10.5285/e0f0bb80-ab44-2739-e053-6c86abc0289c).
-
 #### SB depth data... just for fun
-Can I do a SB analysis with the depth data?
-I was going to try this to see bathymetry data for surf spot intel... however the data wasn't high enough resolution.  Oh well it still looks cool at least
+
+Can I do a SB analysis with the depth data? I was going to try this to see bathymetry data for surf spot intel... however the data wasn't high enough resolution. Oh well it still looks cool at least
+
 ```{r message=FALSE}
 rast_to_crop <- depth
 lat_up <- 34.522
@@ -381,4 +391,3 @@ sb_depth <- crop(rast_to_crop, extent_of_crop)
 tm_shape(sb_depth) + tm_raster()
 
 ```
-

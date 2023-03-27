@@ -7,7 +7,7 @@ author:
     url: https://jaredbpetry.github.io
     affiliation: Master of Environmental Data Science Program at UCSB
 date: 2023-02-01
-bibliography: references.bib
+#bibliography: references.bib
 catagories: [MEDS, R, geospatial, environmental justice, raster algebra]
 #citation: 
   #url:
