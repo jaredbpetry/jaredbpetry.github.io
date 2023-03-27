@@ -16,7 +16,7 @@ image: images/cover_pic.png
 draft: false
 format: 
   html: 
-    code-fold: true
+    code-fold: false
     code-summary: "Show Code"
     toc: true
     toc-depth: 6 
@@ -86,14 +86,17 @@ library(raster)
 library(tidyverse)
 ```
 
-Read in the shapefile for the West Coast EEZ (`wc_regions_clean.shp`)
+West coast regions:
 ```{r}
+# Read in the shapefile for the West Coast EEZ (`wc_regions_clean.shp`)
+
 wc_regions <- st_read(here(file_path, "data/wc_regions_clean.shp"))
 plot(wc_regions$geometry)
 ```
 
-Read in sea surface temperature rasters and combine them into a raster stack
+Sea surface tmeperature:
 ```{r}
+# Read in sea surface temperature rasters and combine them into a raster stack
 # use list.files() to read in our data 
 #--- you start with a bunch of tif files that you want to stack
 #--- I created a list of just the ones starting with the letter "a" to get the sst rasters I wanted
@@ -105,13 +108,14 @@ plot(sst_spatrast$average_annual_sst_2009)
 #--- at this point you get a crs that says epsg4326 AND epsg9122 so we'll have to change that
 ```
 
-Read in bathymetry raster (`depth.tif`)\
+Bathymetry raster:
 ```{r}
+# Read in bathymetry raster (`depth.tif`)
 depth <- rast(here(file_path, "data/depth.tif"))
 plot(depth)
 ```
 
-Check that data are in the same coordinate reference system and reproject any data not in the same projection
+Reprojecting data so they match in their coordinate reference system:
 ```{r include=TRUE, warning=FALSE, messages=FALSE}
 #--- depth raster is in lon/lat wgs84 EPSG:4326
 #--- wc_regions polygons in wgs84
