@@ -57,6 +57,7 @@ Based on previous research, we know that oysters needs the following conditions 
 -   map algebra
 
 ## Data
+
 #### Sea Surface Temperature
 We will use average annual sea surface temperature (SST) from the years 2008 to 2012 to characterize the average sea surface temperature within the region. The data we are working with was originally generated from [NOAA's 5km Daily Global Satellite Sea Surface Temperature Anomaly v3.1](https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php).
 
@@ -67,6 +68,7 @@ To characterize the depth of the ocean we will use the [General Bathymetric Char
 We will be designating maritime boundaries using Exclusive Economic Zones off of the west coast of US from [Marineregions.org](https://www.marineregions.org/eez.php).
 
 ## Prepare data 
+
 To start, we need to load all necessary data and make sure it has the coordinate reference system. 
     
 ```{r include=FALSE}
@@ -128,6 +130,7 @@ st_transform(wc_regions, crs = crs(depth)) #--- great now they are same crs
 ```
 
 ## Process data 
+
 Next, we need process the SST and depth data so that they can be combined. In this case the SST and depth data have slightly different resolutions, extents, and positions. We don't want to change the underlying depth data, so we will need to resample to match the SST data using the nearest neighbor approach. 
 
 Find the mean SST from 2008-2012
@@ -159,6 +162,7 @@ depth_and_sst <- raster::stack(c(depth_cropped_resampled, mean_sst_C))
 ```
 
 ## Find suitable locations 
+
 In order to find suitable locations for marine aquaculture, we'll need to find locations that are suitable in terms of both SST and depth.
 
 Reclassify SST and depth data into locations that are suitable for oysters. We will do this by setting suitable values to `1` and unsuitable values to `NA`
@@ -247,6 +251,7 @@ print_df
 ```
     
 ## Visualize results 
+
 Now that we have results, we need to present them!
 
 We will create the following maps:
@@ -284,6 +289,7 @@ percent_map
 ```
 
 ## Broaden the workflow! 
+
 Now that we've worked through the suitable habitat areas for one group of species, let's update our workflow to work for other species. We will do this by creating a function that would allow you to reproduce your results for other species. It will be able to do the following:
 
 -   accept temperature and depth ranges and species name as inputs
