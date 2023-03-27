@@ -6,7 +6,7 @@ author:
   - name: Jared Petry 
     url: https://jaredbpetry.github.io
     affiliation: Master of Environmental Data Science Program at UCSB
-date: 2022-12-01
+date: 2023-02-01
 bibliography: references.bib
 catagories: [MEDS, R, geospatial, aquaculture]
 #citation: 
@@ -56,7 +56,7 @@ Based on previous research, we know that oysters needs the following conditions 
 -   masking raster data
 -   map algebra
 
-### Data
+## Data
 #### Sea Surface Temperature
 We will use average annual sea surface temperature (SST) from the years 2008 to 2012 to characterize the average sea surface temperature within the region. The data we are working with was originally generated from [NOAA's 5km Daily Global Satellite Sea Surface Temperature Anomaly v3.1](https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php).
 
@@ -66,7 +66,7 @@ To characterize the depth of the ocean we will use the [General Bathymetric Char
 #### Exclusive Economic Zones
 We will be designating maritime boundaries using Exclusive Economic Zones off of the west coast of US from [Marineregions.org](https://www.marineregions.org/eez.php).
 
-#### Prepare data 
+## Prepare data 
 To start, we need to load all necessary data and make sure it has the coordinate reference system. 
     
 ```{r include=FALSE}
@@ -89,6 +89,7 @@ library(tidyverse)
 Read in the shapefile for the West Coast EEZ (`wc_regions_clean.shp`)
 ```{r}
 wc_regions <- st_read(here(file_path, "data/wc_regions_clean.shp"))
+plot(wc_regions$geometry)
 ```
 
 Read in sea surface temperature rasters and combine them into a raster stack
@@ -100,12 +101,14 @@ file_list <- list.files(path = "data/", pattern = "^[a]", full.names = TRUE)
 #--- now read them in using rast... this will create a spatraster with multiple layers
 #--- (this isn't an actual raster stack so let's see if this works.. terra calls them the same thing)
 sst_spatrast <- rast(file_list)
+plot(sst_spatrast$average_annual_sst_2009)
 #--- at this point you get a crs that says epsg4326 AND epsg9122 so we'll have to change that
 ```
 
 Read in bathymetry raster (`depth.tif`)\
 ```{r}
 depth <- rast(here(file_path, "data/depth.tif"))
+plot(depth)
 ```
 
 Check that data are in the same coordinate reference system and reproject any data not in the same projection
@@ -120,7 +123,7 @@ set.crs(depth, "EPSG:4326")
 st_transform(wc_regions, crs = crs(depth)) #--- great now they are same crs
 ```
 
-#### Process data 
+## Process data 
 Next, we need process the SST and depth data so that they can be combined. In this case the SST and depth data have slightly different resolutions, extents, and positions. We don't want to change the underlying depth data, so we will need to resample to match the SST data using the nearest neighbor approach. 
 
 Find the mean SST from 2008-2012
@@ -151,10 +154,12 @@ depth_and_sst <- raster::stack(c(depth_cropped_resampled, mean_sst_C))
 #--- yes! they can be stacked
 ```
 
-#### Find suitable locations 
+## Find suitable locations 
 In order to find suitable locations for marine aquaculture, we'll need to find locations that are suitable in terms of both SST and depth.
 
 Reclassify SST and depth data into locations that are suitable for oysters. We will do this by setting suitable values to `1` and unsuitable values to `NA`
+
+The first plot will show suitable depth for oysters and the second will showsuitable sea surface temperature.
 ```{r include=TRUE}
 #--- for oysters, we need 11 <= sst(C) <= 30
 #------ and 0 <= depth <= 70
@@ -239,7 +244,7 @@ print_df <- habitat_by_region_df |>
 print_df
 ```
     
-#### Visualize results 
+## Visualize results 
 Now that we have results, we need to present them!
 
 We will create the following maps:
@@ -276,13 +281,13 @@ tm_layout(legend.outside = TRUE,
 percent_map
 ```
 
-#### Broaden your workflow! 
+## Broaden the workflow! 
 Now that we've worked through the suitable habitat areas for one group of species, let's update our workflow to work for other species. We will do this by creating a function that would allow you to reproduce your results for other species. It will be able to do the following:
 
 -   accept temperature and depth ranges and species name as inputs
 -   create maps of total suitable area and percent suitable area per EEZ with the species name in the title
 
-```{r}
+```{r echo=TRUE}
 find_suitable_habitat <- function(spp_name, temp_min, temp_max, depth_min, depth_max) {
   depth_rcl <- matrix(c(-Inf, depth_min, NA, 
                                depth_min, depth_max, 1, 
@@ -351,8 +356,8 @@ find_suitable_habitat(spp_name = "American lobster", 11, 19, -480, 0)
 
 #### SB depth data... just for fun
 Can I do a SB analysis with the depth data?
-I was going to try this to see bathymetry data for surf spor intel... however the data wasn't high enough resolution.  Oh well it still looks cool at least
-```{r}
+I was going to try this to see bathymetry data for surf spot intel... however the data wasn't high enough resolution.  Oh well it still looks cool at least
+```{r message=FALSE}
 rast_to_crop <- depth
 lat_up <- 34.522
 lat_down <- 34.085
