@@ -1,0 +1,28 @@
+---
+title: "Creating Various Models to Predict Who Listened to a Song with Spotify Data"
+description: |
+  "Uploading a "
+author:
+  - name: Jared Petry 
+    url: https://jaredbpetry.github.io
+    affiliation: Master of Environmental Data Science Program at UCSB
+date: 2023-02-01
+bibliography: references.bib
+catagories: [MEDS, R, geospatial, aquaculture]
+#citation: 
+  #url:
+  #photo:
+image: images/cover_pic.png
+draft: true
+format: 
+  html: 
+    code-fold: false
+    code-summary: "Show Code"
+    toc: true
+    toc-depth: 6 
+    toc-title: Contents
+code-overflow: wrap
+code-block-bg: true
+code-block-border-left: "#6B5A75"
+editor: visual
+---

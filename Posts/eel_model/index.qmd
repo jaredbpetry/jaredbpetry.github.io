@@ -8,7 +8,7 @@ author:
     affiliation: Master of Environmental Data Science Program at UCSB
 date: 2023-02-01
 bibliography: references.bib
-catagories: [MEDS, R, geospatial, machine learning, modeling, boosted regression trees]
+catagories: [MEDS, R, machine learning, modeling, boosted regression trees]
 #citation: 
   #url:
   #photo:
