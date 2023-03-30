@@ -5,4 +5,8 @@ listing:
   contents: Posts
   sort: "date desc"
   categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: false
 ---
