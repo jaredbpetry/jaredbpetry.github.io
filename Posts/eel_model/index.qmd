@@ -249,7 +249,7 @@ stoch_tune_wf <- workflow() |>
 
 ```{r}
 stoch_param <- dials::parameters(
-  finalize(mtry(), select(eel_train, -Angaus)), 
+  finalize(mtry(), dplyr::select(eel_train, -Angaus)), 
   sample_size = sample_prop(c(0.4, 0.9))
 )
 stoch_grid <- grid_max_entropy(stoch_param, size = 60)
@@ -318,7 +318,7 @@ boost_predictions <- final_eel_fit$.predictions[[1]]
 
 # make a simple table of just the predictions and actual values
 confusion_table <- boost_predictions |> 
-  select(c(.pred_class, Angaus))
+  dplyr::select(c(.pred_class, Angaus))
 
 # create a confusion matrix comparing the predictions with actual observations
 confusionMatrix(data = confusion_table$.pred_class, 
@@ -327,7 +327,7 @@ confusionMatrix(data = confusion_table$.pred_class,
 
 **Well, looks like my model did OK.  It got an accuracy of 0.8339 which is not too bad... from looking at the confusion matrix, most of the errors that were made were false negative predictions, which were over twice the number of false positive predictions.**
 
-## Fit your model the evaluation data and compare performance
+## Fit the model to the evaluation data and compare performance
 
 1.  Now we will fit the final model to the big dataset used in the paper.
 

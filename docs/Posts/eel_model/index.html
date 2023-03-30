@@ -216,7 +216,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#tune-stochastic-parameters" id="toc-tune-stochastic-parameters" class="nav-link" data-scroll-target="#tune-stochastic-parameters">Tune Stochastic Parameters</a></li>
   </ul></li>
   <li><a href="#finalize-workflow-and-make-final-prediction" id="toc-finalize-workflow-and-make-final-prediction" class="nav-link" data-scroll-target="#finalize-workflow-and-make-final-prediction">Finalize workflow and make final prediction</a></li>
-  <li><a href="#fit-your-model-the-evaluation-data-and-compare-performance" id="toc-fit-your-model-the-evaluation-data-and-compare-performance" class="nav-link" data-scroll-target="#fit-your-model-the-evaluation-data-and-compare-performance">Fit your model the evaluation data and compare performance</a></li>
+  <li><a href="#fit-the-model-to-the-evaluation-data-and-compare-performance" id="toc-fit-the-model-to-the-evaluation-data-and-compare-performance" class="nav-link" data-scroll-target="#fit-the-model-to-the-evaluation-data-and-compare-performance">Fit the model to the evaluation data and compare performance</a></li>
   <li><a href="#variable-importance" id="toc-variable-importance" class="nav-link" data-scroll-target="#variable-importance">Variable Importance</a></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
   </ul>
@@ -277,7 +277,7 @@ The following object is masked from 'package:purrr':
 ✖ yardstick::spec()        masks readr::spec()
 ✖ yardstick::specificity() masks caret::specificity()
 ✖ recipes::step()          masks stats::step()
-• Dig deeper into tidy modeling with R at https://www.tmwr.org</code></pre>
+• Search for functions across packages at https://www.tidymodels.org/find/</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gbm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -397,7 +397,7 @@ dbl (13): Site, Angaus, SegSumT, SegTSeas, SegLowFlow, DSDist, DSMaxSlope, U...
 <span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>end_time1 <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
 <span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"time elapsed:"</span>, (end_time1 <span class="sc">-</span> start_time1)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "time elapsed: 2.00375526779228"</code></pre>
+<pre><code>[1] "time elapsed: 5.83796453078588"</code></pre>
 </div>
 </div>
 <ol start="3" type="1">
@@ -409,11 +409,11 @@ dbl (13): Site, Angaus, SegSumT, SegTSeas, SegLowFlow, DSDist, DSMaxSlope, U...
 <pre><code># A tibble: 5 × 7
   learn_rate .metric .estimator  mean     n std_err .config              
        &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                
-1     0.290  roc_auc binary     0.814    10  0.0164 Preprocessor1_Model29
-2     0.207  roc_auc binary     0.813    10  0.0169 Preprocessor1_Model21
-3     0.0311 roc_auc binary     0.812    10  0.0162 Preprocessor1_Model04
-4     0.186  roc_auc binary     0.811    10  0.0192 Preprocessor1_Model19
-5     0.238  roc_auc binary     0.810    10  0.0178 Preprocessor1_Model24</code></pre>
+1     0.0725 roc_auc binary     0.821    10  0.0214 Preprocessor1_Model08
+2     0.0518 roc_auc binary     0.820    10  0.0205 Preprocessor1_Model06
+3     0.104  roc_auc binary     0.820    10  0.0241 Preprocessor1_Model11
+4     0.269  roc_auc binary     0.819    10  0.0223 Preprocessor1_Model27
+5     0.207  roc_auc binary     0.819    10  0.0241 Preprocessor1_Model21</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- learn rate = 0.04146552... use this because the paper did</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(tune_learn, <span class="at">metric =</span> <span class="st">"accuracy"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -421,11 +421,11 @@ dbl (13): Site, Angaus, SegSumT, SegTSeas, SegLowFlow, DSDist, DSMaxSlope, U...
 <pre><code># A tibble: 5 × 7
   learn_rate .metric  .estimator  mean     n std_err .config              
        &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                
-1     0.0208 accuracy binary     0.831    10 0.00859 Preprocessor1_Model03
-2     0.0104 accuracy binary     0.831    10 0.00695 Preprocessor1_Model02
-3     0.0311 accuracy binary     0.830    10 0.00850 Preprocessor1_Model04
-4     0.104  accuracy binary     0.827    10 0.00875 Preprocessor1_Model11
-5     0.0725 accuracy binary     0.827    10 0.00978 Preprocessor1_Model08</code></pre>
+1     0.259  accuracy binary     0.823    10 0.00873 Preprocessor1_Model26
+2     0.124  accuracy binary     0.821    10 0.0112  Preprocessor1_Model13
+3     0.207  accuracy binary     0.821    10 0.0110  Preprocessor1_Model21
+4     0.176  accuracy binary     0.818    10 0.0118  Preprocessor1_Model18
+5     0.0104 accuracy binary     0.818    10 0.0123  Preprocessor1_Model02</code></pre>
 </div>
 </div>
 </section>
@@ -482,18 +482,18 @@ dbl (13): Site, Angaus, SegSumT, SegTSeas, SegLowFlow, DSDist, DSMaxSlope, U...
 <span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>end_time1 <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
 <span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"time elapsed:"</span>, (end_time1 <span class="sc">-</span> start_time1)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "time elapsed: 9.25062733491262"</code></pre>
+<pre><code>[1] "time elapsed: 11.8651802341143"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(tune_tree, <span class="at">metric =</span> <span class="st">"roc_auc"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 9
   min_n tree_depth loss_reduction .metric .estimator  mean     n std_err .config
   &lt;int&gt;      &lt;int&gt;          &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;  
-1     8          3       5.80e+ 0 roc_auc binary     0.832    10  0.0105 Prepro…
-2     5         10       1.03e+ 1 roc_auc binary     0.830    10  0.0101 Prepro…
-3    13         15       2.26e+ 0 roc_auc binary     0.828    10  0.0107 Prepro…
-4    15          1       3.50e-10 roc_auc binary     0.824    10  0.0162 Prepro…
-5    18         10       3.52e-10 roc_auc binary     0.822    10  0.0154 Prepro…</code></pre>
+1     3         14       4.98e- 9 roc_auc binary     0.831    10  0.0209 Prepro…
+2    15         11       2.75e+ 0 roc_auc binary     0.830    10  0.0187 Prepro…
+3     2         15       2.35e- 6 roc_auc binary     0.829    10  0.0202 Prepro…
+4     4          7       1.63e-10 roc_auc binary     0.828    10  0.0238 Prepro…
+5     3          9       1.48e- 5 roc_auc binary     0.827    10  0.0213 Prepro…</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># best value for min_n: 17</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># best value for tree_depth: 11</span></span>
@@ -529,7 +529,7 @@ dbl (13): Site, Angaus, SegSumT, SegTSeas, SegLowFlow, DSDist, DSMaxSlope, U...
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>stoch_param <span class="ot">&lt;-</span> dials<span class="sc">::</span><span class="fu">parameters</span>(</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize</span>(<span class="fu">mtry</span>(), <span class="fu">select</span>(eel_train, <span class="sc">-</span>Angaus)), </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize</span>(<span class="fu">mtry</span>(), dplyr<span class="sc">::</span><span class="fu">select</span>(eel_train, <span class="sc">-</span>Angaus)), </span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample_size =</span> <span class="fu">sample_prop</span>(<span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.9</span>))</span>
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>stoch_grid <span class="ot">&lt;-</span> <span class="fu">grid_max_entropy</span>(stoch_param, <span class="at">size =</span> <span class="dv">60</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -548,18 +548,18 @@ dbl (13): Site, Angaus, SegSumT, SegTSeas, SegLowFlow, DSDist, DSMaxSlope, U...
 <span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>end_time1 <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
 <span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"time elapsed:"</span>, (end_time1 <span class="sc">-</span> start_time1)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "time elapsed: 5.46083606077565"</code></pre>
+<pre><code>[1] "time elapsed: 20.4042701681455"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(tune_stoch, <span class="at">metric =</span> <span class="st">"roc_auc"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 8
    mtry sample_size .metric .estimator  mean     n std_err .config              
   &lt;int&gt;       &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                
-1     5       0.887 roc_auc binary     0.827    10  0.0160 Preprocessor1_Model05
-2     9       0.898 roc_auc binary     0.825    10  0.0165 Preprocessor1_Model27
-3     6       0.882 roc_auc binary     0.824    10  0.0163 Preprocessor1_Model57
-4     8       0.899 roc_auc binary     0.824    10  0.0169 Preprocessor1_Model04
-5     5       0.827 roc_auc binary     0.824    10  0.0160 Preprocessor1_Model54</code></pre>
+1     2       0.886 roc_auc binary     0.808    10  0.0214 Preprocessor1_Model07
+2     5       0.447 roc_auc binary     0.808    10  0.0257 Preprocessor1_Model32
+3     6       0.775 roc_auc binary     0.806    10  0.0242 Preprocessor1_Model40
+4     1       0.710 roc_auc binary     0.806    10  0.0241 Preprocessor1_Model60
+5     3       0.443 roc_auc binary     0.806    10  0.0249 Preprocessor1_Model10</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># best value for mtry: 1</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># best value for sample size: 0.8932816</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -600,16 +600,16 @@ dbl (13): Site, Angaus, SegSumT, SegTSeas, SegLowFlow, DSDist, DSMaxSlope, U...
 # A tibble: 301 × 6
    .pred_0 .pred_1  .row .pred_class Angaus .config             
      &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt; &lt;fct&gt;       &lt;fct&gt;  &lt;chr&gt;               
- 1  0.0914  0.909      2 1           1      Preprocessor1_Model1
- 2  0.660   0.340      3 0           0      Preprocessor1_Model1
- 3  0.974   0.0261     7 0           0      Preprocessor1_Model1
- 4  0.873   0.127      8 0           0      Preprocessor1_Model1
- 5  0.796   0.204      9 0           0      Preprocessor1_Model1
- 6  0.949   0.0510    11 0           0      Preprocessor1_Model1
- 7  0.859   0.141     20 0           0      Preprocessor1_Model1
- 8  0.915   0.0850    21 0           0      Preprocessor1_Model1
- 9  0.986   0.0136    28 0           0      Preprocessor1_Model1
-10  0.709   0.291     36 0           0      Preprocessor1_Model1
+ 1   0.194 0.806       2 1           1      Preprocessor1_Model1
+ 2   0.812 0.188       4 0           0      Preprocessor1_Model1
+ 3   0.986 0.0136      6 0           0      Preprocessor1_Model1
+ 4   0.551 0.449      10 0           1      Preprocessor1_Model1
+ 5   0.968 0.0321     11 0           0      Preprocessor1_Model1
+ 6   0.996 0.00419    15 0           0      Preprocessor1_Model1
+ 7   0.215 0.785      18 1           1      Preprocessor1_Model1
+ 8   0.774 0.226      20 0           0      Preprocessor1_Model1
+ 9   0.969 0.0314     22 0           0      Preprocessor1_Model1
+10   0.985 0.0155     28 0           0      Preprocessor1_Model1
 # … with 291 more rows
 # ℹ Use `print(n = ...)` to see more rows</code></pre>
 </div>
@@ -617,7 +617,7 @@ dbl (13): Site, Angaus, SegSumT, SegTSeas, SegLowFlow, DSDist, DSMaxSlope, U...
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>boost_tree_accuracy <span class="ot">&lt;-</span> boost_tree_metrics<span class="sc">$</span>.estimate[<span class="dv">1</span>]</span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"the decision tree model accuracy came out to: "</span>, boost_tree_accuracy))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "the decision tree model accuracy came out to: 0.820598006644518"</code></pre>
+<pre><code>[1] "the decision tree model accuracy came out to: 0.850498338870432"</code></pre>
 </div>
 </div>
 <ol start="2" type="1">
@@ -630,7 +630,7 @@ dbl (13): Site, Angaus, SegSumT, SegTSeas, SegLowFlow, DSDist, DSMaxSlope, U...
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># make a simple table of just the predictions and actual values</span></span>
 <span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>confusion_table <span class="ot">&lt;-</span> boost_predictions <span class="sc">|&gt;</span> </span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(.pred_class, Angaus))</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">c</span>(.pred_class, Angaus))</span>
 <span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="co"># create a confusion matrix comparing the predictions with actual observations</span></span>
 <span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(<span class="at">data =</span> confusion_table<span class="sc">$</span>.pred_class, </span>
@@ -640,26 +640,26 @@ dbl (13): Site, Angaus, SegSumT, SegTSeas, SegLowFlow, DSDist, DSMaxSlope, U...
 
           Reference
 Prediction   0   1
-         0 215  29
-         1  25  32
+         0 226  31
+         1  14  30
                                           
-               Accuracy : 0.8206          
-                 95% CI : (0.7725, 0.8623)
+               Accuracy : 0.8505          
+                 95% CI : (0.8051, 0.8888)
     No Information Rate : 0.7973          
-    P-Value [Acc &gt; NIR] : 0.1761          
+    P-Value [Acc &gt; NIR] : 0.01109         
                                           
-                  Kappa : 0.431           
+                  Kappa : 0.4837          
                                           
- Mcnemar's Test P-Value : 0.6831          
+ Mcnemar's Test P-Value : 0.01707         
                                           
-            Sensitivity : 0.8958          
-            Specificity : 0.5246          
-         Pos Pred Value : 0.8811          
-         Neg Pred Value : 0.5614          
+            Sensitivity : 0.9417          
+            Specificity : 0.4918          
+         Pos Pred Value : 0.8794          
+         Neg Pred Value : 0.6818          
              Prevalence : 0.7973          
-         Detection Rate : 0.7143          
-   Detection Prevalence : 0.8106          
-      Balanced Accuracy : 0.7102          
+         Detection Rate : 0.7508          
+   Detection Prevalence : 0.8538          
+      Balanced Accuracy : 0.7167          
                                           
        'Positive' Class : 0               
                                           </code></pre>
@@ -667,8 +667,8 @@ Prediction   0   1
 </div>
 <p><strong>Well, looks like my model did OK. It got an accuracy of 0.8339 which is not too bad… from looking at the confusion matrix, most of the errors that were made were false negative predictions, which were over twice the number of false positive predictions.</strong></p>
 </section>
-<section id="fit-your-model-the-evaluation-data-and-compare-performance" class="level2">
-<h2 class="anchored" data-anchor-id="fit-your-model-the-evaluation-data-and-compare-performance">Fit your model the evaluation data and compare performance</h2>
+<section id="fit-the-model-to-the-evaluation-data-and-compare-performance" class="level2">
+<h2 class="anchored" data-anchor-id="fit-the-model-to-the-evaluation-data-and-compare-performance">Fit the model to the evaluation data and compare performance</h2>
 <ol type="1">
 <li>Now we will fit the final model to the big dataset used in the paper.</li>
 </ol>
@@ -713,29 +713,29 @@ dbl (12): Angaus_obs, SegSumT, SegTSeas, SegLowFlow, DSDist, DSMaxSlope, USA...
 
           Reference
 Prediction   0   1
-         0 370  57
-         1  23  50
-                                         
-               Accuracy : 0.84           
-                 95% CI : (0.8049, 0.871)
-    No Information Rate : 0.786          
-    P-Value [Acc &gt; NIR] : 0.0014538      
-                                         
-                  Kappa : 0.4622         
-                                         
- Mcnemar's Test P-Value : 0.0002247      
-                                         
-            Sensitivity : 0.9415         
-            Specificity : 0.4673         
-         Pos Pred Value : 0.8665         
-         Neg Pred Value : 0.6849         
-             Prevalence : 0.7860         
-         Detection Rate : 0.7400         
-   Detection Prevalence : 0.8540         
-      Balanced Accuracy : 0.7044         
-                                         
-       'Positive' Class : 0              
-                                         </code></pre>
+         0 374  57
+         1  19  50
+                                          
+               Accuracy : 0.848           
+                 95% CI : (0.8135, 0.8783)
+    No Information Rate : 0.786           
+    P-Value [Acc &gt; NIR] : 0.0002819       
+                                          
+                  Kappa : 0.4811          
+                                          
+ Mcnemar's Test P-Value : 2.194e-05       
+                                          
+            Sensitivity : 0.9517          
+            Specificity : 0.4673          
+         Pos Pred Value : 0.8677          
+         Neg Pred Value : 0.7246          
+             Prevalence : 0.7860          
+         Detection Rate : 0.7480          
+   Detection Prevalence : 0.8620          
+      Balanced Accuracy : 0.7095          
+                                          
+       'Positive' Class : 0               
+                                          </code></pre>
 </div>
 </div>
 <p><strong>Woohoo! we got an even better accuracy than with the testing data that we fit the model to!</strong> <strong>Accuracy was 84.4% Still over twice as many false negative errors than false positive ones</strong></p>
