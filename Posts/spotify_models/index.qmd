@@ -1,0 +1,527 @@
+---
+title: "Testing Multiple Machine Learning Techniques on a Spotify Classification Problem"
+description: |
+  "My friend Guillermo and I pulled our recent spotify listening data from "
+author:
+  - name: Jared Petry 
+    url: https://jaredbpetry.github.io
+    affiliation: Master of Environmental Data Science Program at UCSB
+date: 2023-02-01
+#bibliography: references.bib
+categories: [MEDS, R, machine learning, modeling, boosted regression trees]
+#citation: 
+  #url:
+  #photo:
+image: eel.png
+draft: false
+format: 
+  html: 
+    code-fold: false
+    code-summary: "Show Code"
+    toc: true
+    toc-depth: 6 
+    toc-title: Contents
+code-overflow: wrap
+code-block-bg: true
+code-block-border-left: "#6B5A75"
+editor: visual
+---
+
+
+This week's lab is a musical lab. You'll be requesting data from the Spotify API and using it to build k-nearest neighbor and decision tree models.
+
+In order to use the Spotify API you must have a Spotify account. If you don't have one, sign up for a free one here: <https://www.spotify.com/us/signup>
+
+Once you have an account, go to Spotify for developers (<https://developer.spotify.com/>) and log in. Click the green "Create a Client ID" button to fill out the form to create an app create an app so you can access the API.
+
+On your developer dashboard page, click on the new app you just created. On the app's dashboard page you will find your Client ID just under the header name of your app. Click "Show Client Secret" to access your secondary Client ID. When you do this you'll be issued a Spotify client ID and client secret key.
+
+You have two options for completing this lab.
+
+**Option 1**: **Classify by users**. Build models that predict whether a given song will be in your collection vs. a partner in class. This requires that you were already a Spotify user so you have enough data to work with. You will download your data from the Spotify API and then exchange with another member of class.
+
+```{r}
+library(spotifyr) #API interaction
+library(tidyverse)
+library(tidymodels)
+library(dplyr)    
+library(ggplot2)   
+library(rsample)   
+library(recipes)
+library(skimr)
+library(kknn)
+library(baguette)
+library(ranger)
+library(scales)
+```
+
+Client ID and Client Secret are required to create and access token that is required to interact with the API. You can set them as system values so we don't have to do provide them each time.
+
+**Run these in the console before progressing**
+
+
+access_token \<- get_spotify_access_token() #takes ID and SECRET, sends to Spotify and receives an access token
+
+> *This may result in an error:*
+>
+> INVALID_CLIENT: Invalid redirect URI
+>
+> *This can be resolved by editing the callback settings on your app. Go to your app and click "Edit Settings". Under redirect URLs paste this: <http://localhost:1410/> and click save at the bottom.*
+
+**Option 1: Data Preparation**
+
+You can use get_my_saved_tracks() to request all your liked tracks. It would be good if you had at least 150-200 liked tracks so the model has enough data to work with. If you don't have enough liked tracks, you can instead use get_my_recently_played(), and in that case grab at least 500 recently played tracks if you can.
+
+The Spotify API returns a dataframe of tracks and associated attributes. However, it will only return up to 50 (or 20) tracks at a time, so you will have to make multiple requests. Use a function to combine all your requests in one call.
+
+```{r}
+access_token <-get_spotify_access_token(
+  client_id ="SECRET",
+  client_secret = "SECRET" )
+
+get_all_tracks <- function(access_token, limit = 50, offset = 0, market = 'US') {
+  tracks <- data.frame()
+  
+  repeat {
+    response_data <- get_my_recently_played(limit = limit)
+    tracks <- bind_rows(tracks,response_data)
+    
+    if (offset + limit >= 600) {
+      break
+    }
+    offset <- offset + limit
+  }
+  
+  tracks
+}
+
+
+all_tracks <- get_all_tracks(access_token)
+```
+
+
+Once you have your tracks, familiarize yourself with this initial dataframe. You'll need to request some additional information for the analysis. If you give the API a list of track IDs using get_track_audio_features(), it will return an audio features dataframe of all the tracks and some attributes of them.
+
+These track audio features are the predictors we are interested in, but this dataframe doesn't have the actual names of the tracks. Append the 'track.name' column from your favorite tracks database.
+
+```{r}
+feature1 <-  get_track_audio_features(all_tracks$track.id[1:100])
+feature2 <- get_track_audio_features(all_tracks$track.id[101:200])
+feature3 <- get_track_audio_features(all_tracks$track.id[201:300])
+feature4 <- get_track_audio_features(all_tracks$track.id[301:400])
+feature5 <- get_track_audio_features(all_tracks$track.id[401:500])
+feature6 <- get_track_audio_features(all_tracks$track.id[501:600])
+
+
+track_features <- bind_rows(feature1,feature2, feature3, feature4, feature5, feature6) |> 
+  bind_cols(track_name = all_tracks$track.name)
+
+write_csv(track_features, 'jared_track_features.csv')
+```
+
+Find a class mate whose data you would like to use. Add your partner's data to your dataset. Create a new column that will contain the outcome variable that you will try to predict. This variable should contain two values that represent if the track came from your data set or your partner's.
+
+```{r}
+guillermo_songs <- read_csv("guillermo_track_features.csv") |> # read in guillermo's csv he sent me
+  bind_cols(who = "g") # create column that tells me it's his data not mine 
+
+jared_songs <- read_csv("jared_track_features.csv") |> # read in the csv I made for myself idk if necessary Oh well
+  bind_cols(who = "j") # create column that tells me it's my data not his
+
+j_g_tracks <- bind_rows(guillermo_songs, jared_songs) # bind our track data together j for jared g for guillermo
+# keep in mind that the dataframe contains more rows for my songs than his... shouldn't affect things too much
+
+colnames(j_g_tracks)
+
+# take off columns that would give away the answer to the model! 
+our_tracks <- j_g_tracks |> 
+  select(-c(type, uri, track_href, analysis_url, id, track_name)) |> 
+  mutate(across(where(is.character), as.factor))
+
+```
+
+
+### **Modeling**
+#Now with an added random forest component and some clarification your task.
+
+Create competing models that predict whether a track belongs to:
+
+Option 1.  you or your partner's collection
+
+Option 2.  genre 1 or genre 2
+
+Create three final candidate models:
+
+1. k-nearest neighbor 
+2. decision tree
+3. bagged tree
+    - bag_tree()
+    - Use the "times =" argument when setting the engine during model specification to specify the number of trees. The rule of thumb is that 50-500 trees is usually sufficient.  The bottom of that range should be sufficient here.  
+4. random forest
+    - rand_forest()
+    - m_try() is the new hyperparameter of interest for this type of model.  Make sure to include it in your         tuning process
+
+Go through the modeling process for each model:
+
+Preprocessing. You can use the same recipe for all the models you create. 
+
+Resampling. Make sure to use appropriate resampling to select the best version created by each algorithm.
+
+Tuning. Find the best values for each hyperparameter (within a reasonable range).
+
+Compare the performance of the four final models you have created.  
+
+Use appropriate performance evaluation metric(s) for this classification task. A table would be a good way to display your comparison.  Use at least one visualization illustrating your model results.
+
+**Quick data exploration (just for fun)**
+
+```{r}
+# see who likes danceable songs more: 
+print(c("Jared's mean danceability is: ", mean(jared_songs$danceability)))
+print(c("Guillermo's mean danceability is: ", mean(guillermo_songs$danceability)))
+# looks like I do haha! 
+
+# see who likes acoustic songs more 
+print(c("Jared's mean acousticness is: ", mean(jared_songs$acousticness)))
+print(c("Guillermo's mean acousticness is: ", mean(guillermo_songs$acousticness)))
+# me as well haha! 
+
+# who likes louder music? 
+print(c("Jared's mean loudness is: ", mean(jared_songs$loudness)))
+print(c("Guillermo's mean loudness is: ", mean(guillermo_songs$loudness)))
+# hmmm not sure how to interprate the negative numbers 
+```
+
+
+
+### **First create a k-nearest neighbor model to classify tracks as either "j" or "g"**
+
+Initial Split: 
+```{r}
+set.seed(123)
+song_split <- initial_split(our_tracks) 
+song_train <- training(song_split) 
+song_test <- testing(song_split)
+```
+
+Pre-processing: (this object can be used by all the models)
+```{r}
+mod_rec <- recipe(who ~ ., data = song_train) |> 
+  step_dummy(all_nominal(), -all_outcomes(), one_hot = TRUE) |> # convert nominal variables to dummy variables
+  step_normalize(all_numeric(), -all_outcomes()) |> 
+  prep() 
+
+#bake training data 
+baked_train <- bake(mod_rec, song_train)
+  
+# bake testing data too
+baked_test <- bake(mod_rec, song_test)
+```
+
+Create decision tree specification with tuned hyperparameters:
+```{r}
+knn_spec_tune <- nearest_neighbor(neighbors = tune()) |> 
+  set_engine("kknn") |> 
+  set_mode("classification")
+knn_spec_tune
+```
+
+
+Create 10 fold cross validation splits on the training set: 
+```{r}
+set.seed(234)
+
+cv_folds <- song_train |> vfold_cv(v = 10)
+```
+
+Bundle into a workflow: 
+```{r}
+knn_workflow <- workflow() |> 
+  add_model(knn_spec_tune) |> 
+  add_recipe(mod_rec) 
+```
+
+Now fit the resamples.
+```{r}
+set.seed(345)
+fit_knn_cv <- knn_workflow |> 
+  tune_grid(
+    cv_folds,
+    grid = data.frame(neighbors = c(1, 5, 10, seq(20, 100, 10))) # this will make it try running on all different folds, for example we are keeping it                                             simple for run time. sample different from 1-100
+  )
+```
+
+collect metrics 
+```{r}
+# Check the performance with collect_metrics()
+fit_knn_cv %>% collect_metrics()
+```
+
+fit final workflow 
+```{r}
+final_wf <- 
+  knn_workflow |> 
+  finalize_workflow(select_best(fit_knn_cv))
+final_wf
+```
+
+See how the model does making predictions on the test data:
+```{r}
+final_fit <- final_wf |> last_fit(song_split)
+# Collect metrics on the test data!
+final_fit |> collect_metrics()
+```
+With this model we have an accuracy which is pretty good!  Let's see if the other models are as good as this one.
+
+### **Decision Tree Model:**
+
+```{r}
+# create model specification 
+tree_spec_tune <- decision_tree(
+  cost_complexity = tune(), 
+  tree_depth = tune(), 
+  min_n = tune()
+) |> 
+  set_engine("rpart") |> 
+  set_mode("classification")
+
+tree_grid <- grid_regular(cost_complexity(), tree_depth(), min_n(), levels = 5) # how many levels will the tune try
+
+tree_grid
+
+# still don't know which combination of hyperparameters will work best because we haven't fit them yet
+
+# create a workflow
+wf_tree_tune <- workflow() |> 
+  add_recipe(mod_rec) |> 
+  add_model(tree_spec_tune)
+
+#set up k-fold cv. This can be used for all the algorithms
+set.seed(456)
+song_cv = song_train |> 
+  vfold_cv(v = 5)
+song_cv
+
+doParallel::registerDoParallel() #build trees in parallel
+#200s
+tree_rs <- tune_grid(
+  tree_spec_tune, # model specification
+  who ~ .,  # features to use
+  resamples = song_cv, # put the resamples that we created above 
+  grid = tree_grid, # which grid
+  metrics = metric_set(accuracy)  # which combination is the best 
+)
+tree_rs
+
+```
+Use autoplot() to examine how different parameter configurations relate to accuracy 
+```{r}
+autoplot(tree_rs) + theme_light()
+```
+select the best hyperparrameters:
+```{r}
+# is you want to actually see the best values for accuracy
+show_best(tree_rs) 
+# model has to actually use one
+select_best(tree_rs) # gives us the best hyperparameters to use for our model
+```
+
+We can finalize the model specification where we have replaced the tune functions with optimized values.
+
+```{r final_tree_spec}
+final_tree <- finalize_model(tree_spec_tune, 
+                             select_best(tree_rs))
+```
+
+This model has not been fit yet though.
+
+```{r final_tree_fit}
+final_tree_fit <- last_fit(final_tree, # give final specification
+                           who ~ ., # give final model call
+                           song_split # give genre split data because this is doing the training and prediction same time
+                           )
+
+final_tree_fit$.predictions
+
+dec_tree_metrics <- final_tree_fit |> collect_metrics()
+dec_tree_accuracy <- dec_tree_metrics$.estimate[1]
+print(paste0("the decision tree model accuracy came out to: ", dec_tree_accuracy))
+```
+Wow even better performance! We got 98.71% accuracy with the decision tree model!
+
+**Bagged decision tree model:**
+```{r}
+# use set.seed(567) somehwere in here?
+# create model specification 
+bag_tree_spec_tune <- bag_tree(
+  cost_complexity = tune(), 
+  tree_depth = tune(), 
+  min_n = tune(),
+  mode = "classification", 
+) |> set_engine("rpart", times = 1000) 
+
+bag_tree_grid <- grid_regular(cost_complexity(), tree_depth(), min_n(), levels = 5) # how many levels will the tune try
+
+bag_tree_grid
+
+# bundle into workflow 
+wf_bag_tree_tune <- workflow() |> 
+  add_recipe(mod_rec) |> 
+  add_model(bag_tree_spec_tune)
+
+# determine best combination of tuned hyperparamters
+doParallel::registerDoParallel() #build trees in parallel
+#200s
+bag_tree_rs <- tune_grid(
+  tree_spec_tune, # model specification
+  who ~ .,  # features to use
+  resamples = song_cv, # put the resamples that we created above 
+  grid = tree_grid, # which grid
+  metrics = metric_set(accuracy)  # which combination is the best 
+)
+
+bag_tree_rs
+
+# Use autoplot() to examine how different parameter configurations relate to accuracy 
+autoplot(tree_rs) + theme_light()
+
+# select the best combination of hyperparameters
+# if you want to actually see the best values for accuracy
+show_best(bag_tree_rs) 
+# model has to actually use one
+select_best(bag_tree_rs) # gives us the best hyperparamters to use for our model
+
+# finalize our model with the best hyperparamters
+final_bag_tree <- finalize_model(bag_tree_spec_tune, 
+                             select_best(bag_tree_rs))
+
+# fit model to testing data and view predictions:
+final_bag_tree_fit <- last_fit(final_bag_tree, # give final specification
+                           who ~ ., # give final model call
+                           song_split # give genre split data because this is doing the training and prediction same time
+                           )
+
+final_bag_tree_fit$.predictions
+
+# collect and view matrics of our model predictions
+final_bag_tree_fit |> collect_metrics()
+```
+
+Here, with the bagged decision tree model, we got about the same accuracy than with the regular decision tree model. However, we get an roc area under the curve of 1! I'm not yet sure what that means for which model is the better one, because this is a better roc_auc than we have seen with any of the other models by far.  I did not know that this would be possible without 100% percent accuracy so I will have to look into that a bit.
+
+**Random forest model**
+
+```{r}
+# create model specification
+rand_for_spec_tune <- rand_forest(
+  trees = 1000, 
+  min_n = tune(),
+  mtry = tune(),
+  mode = "classification",
+  engine = "ranger" # this is the default engine so I went with this
+) # not sure the difference between putting mode and engine within this function or using set_mode() and set_engine()
+
+# Bundle model spec with recipe into workflow
+wf_tune_rand_for <- workflow() |> 
+  add_recipe(recipe = mod_rec) |> 
+  add_model(rand_for_spec_tune)
+
+# use 10 fold cross validation to tune hyperparamters 
+set.seed(678)
+rand_folds <- vfold_cv(song_train) 
+
+# run this in parallel so that is goes faster: 
+set.seed(789)
+doParallel::registerDoParallel()
+
+# create tuning grid
+#--- we have 13 predictors here. mtry is good around sqrt(p) or p/3 so I'll tune within a range of values that includes these values [sqrt(13)= 3.606, 13/3 = 4.333]
+
+rand_tune_grid <- grid_regular(
+  min_n(),
+  mtry(range = c(1,6))
+)
+
+# tune the hyperparameters with the above created grid
+rand_tune_resample <- tune_grid(
+  wf_tune_rand_for,
+  resamples = rand_folds,
+  grid = rand_tune_grid
+)
+
+# visualize results of hyperparameter tuning: 
+autoplot(rand_tune_resample) + theme_light()
+
+# select best hyperparameters
+show_best(rand_tune_resample)
+select_best(rand_tune_resample) # ok it likes mtry = 1, 1000 trees, min_n = 2
+# however professor said that 50 trees would be sufficient... I tested the model with 50 vs. 1000 trees and it didn't seem to make much of a difference!
+
+# now we can finalize our model: 
+final_rand_forest <- finalize_model(rand_for_spec_tune, 
+                             select_best(rand_tune_resample))
+
+# fit the model to the testing data!
+final_randfor_fit <- last_fit(final_rand_forest, # give final specification
+                           who ~ ., # give final model call
+                           song_split # give genre split data because this is doing the training and prediction same time
+                           )
+
+# let's see how the model did! 
+final_randfor_fit$.predictions
+final_randfor_fit |> collect_metrics()
+```
+
+Nice, our model performed very nicely with 99.57% accuracy... it's the best one yet!
+
+Let's make a quick visual to compare the performance of the different models we made: 
+
+```{r}
+knn_results <- final_fit |> 
+  collect_metrics() |> 
+  mutate(model = "knn") |> 
+  relocate(model, .before = .metric) |> 
+  select(-c(.estimator, .config))
+tree_results <- final_tree_fit |> 
+  collect_metrics() |> 
+  mutate(model = "decision tree") |> 
+  relocate(model, .before = .metric) |> 
+  select(-c(.estimator, .config))
+bag_tree_results <- final_bag_tree_fit |> 
+  collect_metrics() |> 
+  mutate(model = "bagged decision tree") |> 
+  relocate(model, .before = .metric) |> 
+  select(-c(.estimator, .config))
+randforest_results <- final_randfor_fit |> 
+  collect_metrics() |> 
+  mutate(model = "random forest") |> 
+  relocate(model, .before = .metric) |> 
+  select(-c(.estimator, .config))
+
+all_results <- bind_rows(knn_results, tree_results, 
+                         bag_tree_results, randforest_results)
+
+all_results
+
+# make a plot that compares the accuracy of the models: 
+accuracy_results <- all_results |> 
+  filter(.metric == "accuracy") |> 
+  select(-.metric) |> 
+  rename(accuracy = .estimate)
+
+ggplot(data = accuracy_results,
+       mapping = aes(x = model, y = accuracy)) +
+  geom_bar(stat = "identity",
+           aes(fill = model)) + 
+  labs(title = "comparing accuracy across the models I created",
+       x = "model name", 
+       y = "accuracy") + 
+  scale_fill_brewer(palette = "Dark2") +
+  scale_y_continuous(limits = c(0.95, 1),
+                     oob = scales::oob_keep)
+```
+
+So, we see here that the random forest has done better than all the models.  Both the random forest and the bagged decision tree have achieved a perfect score for the area under the curve so that is interesting.
+
+
+

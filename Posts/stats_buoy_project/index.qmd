@@ -8,7 +8,7 @@ author:
     affiliation: Master of Environmental Data Science Program at UCSB
 date: 2022-12-01
 bibliography: references.bib
-catagories: [MEDS, R, stats, surf]
+categories: [MEDS, R, stats, surf]
 #citation: 
   #url:
   #photo:

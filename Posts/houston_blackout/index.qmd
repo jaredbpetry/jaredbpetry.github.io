@@ -8,7 +8,7 @@ author:
     affiliation: Master of Environmental Data Science Program at UCSB
 date: 2023-02-01
 #bibliography: references.bib
-catagories: [MEDS, R, geospatial, environmental justice, raster algebra]
+categories: [MEDS, R, geospatial, environmental justice, raster algebra]
 #citation: 
   #url:
   #photo:
@@ -95,9 +95,10 @@ library(ggplot2)
 
 ```
 
-## Project 
+## Project
 
-Load and visualize aerial raster files during the blackout and after: 
+Load and visualize aerial raster files during the blackout and after:
+
 ```{r include=TRUE}
 
 #--- Load in the raster files for the tiles you want
@@ -131,6 +132,7 @@ plot(rast_0216)
 ```
 
 How to change a `stars` object into an `sf` object:
+
 ```{r}
 sfrast_0207 <- st_as_sf(rast_0207) #sf object in wgs84
 ```
@@ -150,7 +152,7 @@ plot(diff_rast_over200) #stars object
 
 ```
 
-##### Vectorize the Mask 
+##### Vectorize the Mask
 
 -   use `st_as_sf()` to vectorize the blackout mask
 -   fix any invalid geometries using `st_make_valid`
@@ -163,7 +165,7 @@ plot(blackout_vect)
 
 ```
 
-##### Crop the Vectorized Map to Our Region of Interest 
+##### Crop the Vectorized Map to Our Region of Interest
 
 -   define the Houston metropolitan area with the following coordinates
     -   (-96.5, 29), (-96.5, 30.5), (-94.5, 30.5), (-94.5, 29)
@@ -195,7 +197,7 @@ houston_subset <- st_crop(blackout_vect, houston_poly_sf) # in wgs84
 houston_blackout <- st_transform(houston_subset, "EPSG: 3083") # in NAD83
 ```
 
-##### Exclude Highways from Blackout Mask 
+##### Exclude Highways from Blackout Mask
 
 The roads geopackage includes data on roads other than highways. However, we can avoid reading in data we don't need by taking advantage of `st_read`'s ability to subset using a SQL query.\
 
@@ -203,7 +205,7 @@ The roads geopackage includes data on roads other than highways. However, we can
 -   load just highway data from geopackage using `st_read`
 -   reproject data to EPSG:3083
 -   identify areas within 200m of all highways using `st_buffer`
-    -    `st_buffer` produces undissolved buffers, use `st_union` to dissolve them
+    -   `st_buffer` produces undissolved buffers, use `st_union` to dissolve them
 -   find areas that experienced blackouts that are further than 200m from a highway
 
 `query <- "SELECT * FROM gis_osm_roads_free_1 WHERE fclass='motorway'"`\
@@ -231,10 +233,10 @@ houston_no_hwy <- houston_blackout[highway_buffer, op = st_disjoint]
 
 #### Find homes impacted by blackouts
 
-##### load buildings data 
+##### load buildings data
 
 -   load buildings dataset using `st_read` and the following SQL query to select only residential buildings
--    reproject data to EPSG:3083
+-   reproject data to EPSG:3083
 
 ```{r include=TRUE}
 homes_query <- "SELECT * FROM gis_osm_buildings_a_free_1 WHERE (type IS NULL AND name IS NULL) OR type in ('residential', 'apartments', 'house', 'static_caravan', 'detached')"
@@ -243,7 +245,7 @@ homes <- st_read("/Users/jaredpetry/Documents/MEDS/fall/eds223_geospatial/assign
   st_transform("EPSG:3083")
 ```
 
-##### find homes in blackout areas 
+##### find homes in blackout areas
 
 -   filter to homes within blackout areas
 -   count number of impacted homes
@@ -258,7 +260,7 @@ print(nrow(blackout_homes)) #--- 71,233 homes affected
 
 #### Investigate socioeconomic factors
 
-##### load ACS data 
+##### load ACS data
 
 -   use `st_read()` to load the geodatabase layers
 -   geometries are stored in the `ACS_2019_5YR_TRACT_48_TEXAS` layer
@@ -281,7 +283,7 @@ median_income <- st_read("/Users/jaredpetry/Documents/MEDS/fall/eds223_geospatia
 
 ```
 
-##### Determine which census tracts experienced blackouts 
+##### Determine which census tracts experienced blackouts
 
 -   join the income data to the census tract geometries
 -   make sure to join by geometry ID
@@ -318,7 +320,7 @@ black_tract_unique,]
 unaffected_tracts <- tract[!(tract$TRACTCE %in% black_tract_unique),]
 ```
 
-##### Compare incomes of impacted tracts to unimpacted tracts 
+##### Compare incomes of impacted tracts to unimpacted tracts
 
 -   create a map of median income by census tract, designating which tracts had blackouts
 
@@ -366,7 +368,7 @@ unaffected_tracts_map
 
 ## Results
 
-### Make the Map 
+### Make the Map
 
 start with all the tracts and color based on income
 
@@ -417,6 +419,7 @@ tmap_arrange(blackout_w_income_map, unaffected_w_income_map,
 ```
 
 plot the distribution of income in impacted and unimpacted tracts
+
 ```{r include=TRUE}
 #--- make two boxplots next to eachother with income data of tracts to compare blackout vs. non-blackout tracts 
 
@@ -424,7 +427,6 @@ boxplot(blackout_w_income$median_income, unaffected_w_income$median_income,
         names = c("affected", "unaffected"))
 ```
 
-
-#### Discussion: 
+#### Discussion:
 
 Upon looking at the maps and boxplot I made above, there does not seem to be a very significant difference in the median income between the two groups: those affected by the blackout and those not affected. That really surprised me because I believe that the electrical infrastructure in lower income neighborhoods would have likely been older and more subject to failure while the grid was in a stressful state during this weather event. I would say that a limitation to this study is the fact that the two satellite images that we started with happened to be a bit far apart temporally. I would hypothesize that if we were able to obtain a photo right before the blackout happened, and then right when the blackout was at its most severe, we would have been able to see a larger difference, and possibly seen more significant results. Additionally, the data may have been slightly misleading for the income data because the areas farther from the city seemed to be much less affected, and likely contain very different demographics than those closer to the urban areas of Houston. I noticed that the more rural areas tended to have slightly lower median incomes. It would be interesting to focus on a smaller area, because these large tracts may have skewed our data a bit.

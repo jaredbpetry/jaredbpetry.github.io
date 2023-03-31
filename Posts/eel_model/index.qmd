@@ -8,7 +8,7 @@ author:
     affiliation: Master of Environmental Data Science Program at UCSB
 date: 2023-02-01
 #bibliography: references.bib
-catagories: [MEDS, R, machine learning, modeling, boosted regression trees]
+categories: [MEDS, R, machine learning, modeling, boosted regression trees]
 #citation: 
   #url:
   #photo:
@@ -33,7 +33,7 @@ This blog post loosely follows the boosted regression tree exercise outlined in 
 
 Citation:
 
-Elith, J., Leathwick, J. R., & Hastie, T. (2008). A working guide to boosted regression trees. Journal of Animal Ecology, 77(4), 802–813. https://doi.org/10.1111/j.1365-2656.2008.01390.x
+Elith, J., Leathwick, J. R., & Hastie, T. (2008). A working guide to boosted regression trees. Journal of Animal Ecology, 77(4), 802--813. https://doi.org/10.1111/j.1365-2656.2008.01390.x
 
 ```{r}
 library(tidyverse) 
@@ -48,12 +48,12 @@ library(vip)
 ```
 
 Read in the data
+
 ```{r}
 eel_dat <- read_csv("eel.model.data.csv") |> 
   mutate(Angaus = as.factor(Angaus))
 
 ```
-
 
 ### Split and Resample
 
@@ -75,11 +75,9 @@ eel_folds <- vfold_cv(data = eel_train,
                       strata = Angaus)
 ```
 
-
 ### Preprocess
 
-Create a recipe to prepare the data for the XGBoost model.  We are interested in predicting the binary outcome variable Angaus which indicates presence or absence of the eel species Anguilla australis
-
+Create a recipe to prepare the data for the XGBoost model. We are interested in predicting the binary outcome variable Angaus which indicates presence or absence of the eel species Anguilla australis
 
 ```{r}
 eel_recipe <- recipe(Angaus ~ ., data = eel_train) |> 
@@ -87,18 +85,14 @@ eel_recipe <- recipe(Angaus ~ ., data = eel_train) |>
 
 ```
 
-
 ## Tuning XGBoost
 
-We are going to tune 3 different times to get the ideal hyperparamters in our model.
-We first tune the learning rate and get the estimation of the best learning rate. 
-Then we take that learning rate and set it as fixed in the next tuning.
-Next, we tune the three tree paramters: tree_depth, loss_reduction, and min_n.
-Lastly, we will set those as fixed for the stochastic tuning (m_try).
+We are going to tune 3 different times to get the ideal hyperparamters in our model. We first tune the learning rate and get the estimation of the best learning rate. Then we take that learning rate and set it as fixed in the next tuning. Next, we tune the three tree paramters: tree_depth, loss_reduction, and min_n. Lastly, we will set those as fixed for the stochastic tuning (m_try).
 
 ### Tune Learning Rate
 
 1.  Create a model specification using {xgboost} for the estimation
+
 -   Only specify learning rate parameter to tune()
 
 ```{r}
@@ -115,7 +109,6 @@ eel_boost_model <- boost_tree(
   )
 ```
 
-
 2.  Set up a grid to tune the model by using a range of learning rate parameter values.
 
 ```{r}
@@ -125,6 +118,7 @@ learn_rate_grid <- expand.grid(learn_rate = seq(0.0001, 0.3, length.out = 30))
 Computational efficiency becomes a factor as models get more complex and data gets larger. Becuase of this, we will be recording the time it takes to run with `Sys.time()`.
 
 Tune the learning rate parameter:
+
 ```{r}
 # tune the learning rate:
 
@@ -145,7 +139,6 @@ print(paste("time elapsed:", (end_time1 - start_time1)))
 
 ```
 
-
 3.  Show the performance of the best models and the estimates for the learning rate parameter values associated with each.
 
 ```{r}
@@ -154,7 +147,6 @@ show_best(tune_learn, metric = "roc_auc")  # using metric roc_auc
 show_best(tune_learn, metric = "accuracy") 
 
 ```
-
 
 ### Tune Tree Parameters
 
@@ -181,7 +173,6 @@ tree_tune_wf <- workflow() |>
 
 ```
 
-
 2.  Set up a tuning grid. This time use grid_max_entropy() to get a representative sampling of the parameter space
 
 ```{r}
@@ -197,7 +188,6 @@ tree_depth_param <- dials::parameters(
 )
 tree_tune_grid <- grid_max_entropy(tree_depth_param, size = 60)
 ```
-
 
 3.  Show the performance of the best models and the estimates for the tree parameter values associated with each.
 
@@ -218,7 +208,6 @@ show_best(tune_tree, metric = "roc_auc")
 # best value for loss_reduction: 0.367
 
 ```
-
 
 ### Tune Stochastic Parameters
 
@@ -244,7 +233,6 @@ stoch_tune_wf <- workflow() |>
   add_recipe(eel_recipe)
 ```
 
-
 2.  Set up a tuning grid using grid_max_entropy() again.
 
 ```{r}
@@ -255,7 +243,6 @@ stoch_param <- dials::parameters(
 stoch_grid <- grid_max_entropy(stoch_param, size = 60)
 
 ```
-
 
 3.  Show the performance of the best models and the estimates for the tree parameter values associated with each.
 
@@ -274,7 +261,6 @@ show_best(tune_stoch, metric = "roc_auc")
 # best value for mtry: 1
 # best value for sample size: 0.8932816
 ```
-
 
 ## Finalize workflow and make final prediction
 
@@ -309,9 +295,10 @@ boost_tree_accuracy <- boost_tree_metrics$.estimate[1]
 print(paste0("the decision tree model accuracy came out to: ", boost_tree_accuracy))
 ```
 
-2. How well did your model perform? What types of errors did it make?
+2.  How well did your model perform? What types of errors did it make?
 
 make a confusion matrix
+
 ```{r}
 # to make a confusion matrix we need a table of the predictions vs the true values
 boost_predictions <- final_eel_fit$.predictions[[1]]
@@ -325,7 +312,7 @@ confusionMatrix(data = confusion_table$.pred_class,
                 reference = confusion_table$Angaus)
 ```
 
-**Well, looks like my model did OK.  It got an accuracy of 0.8339 which is not too bad... from looking at the confusion matrix, most of the errors that were made were false negative predictions, which were over twice the number of false positive predictions.**
+**Well, looks like my model did OK. It got an accuracy of 0.8339 which is not too bad... from looking at the confusion matrix, most of the errors that were made were false negative predictions, which were over twice the number of false positive predictions.**
 
 ## Fit the model to the evaluation data and compare performance
 
@@ -359,8 +346,8 @@ confusionMatrix(data = joined_predictions$.pred_class,
                 reference = joined_predictions$Angaus_obs)
 
 ```
-**Woohoo! we got an even better accuracy than with the testing data that we fit the model to!**
-**Accuracy was 84.4% Still over twice as many false negative errors than false positive ones**
+
+**Woohoo! we got an even better accuracy than with the testing data that we fit the model to!** **Accuracy was 84.4% Still over twice as many false negative errors than false positive ones**
 
 3.  How do our results compare to those of Elith et al.?
 
@@ -375,18 +362,17 @@ Using the package {vip} to compare variable importance. This is really cool beca
 vip(eval_fit)
 ```
 
-
 ## Discussion
 
 What do our variable importance results tell us about the distribution of this eel species?
 
-> Summer air temperature is very important to this species because it was the most influential variable in the model. Maybe some part of their breeding or other important stage of their life cycle occurs in summer. From the code I wrote below, it seems like they like warmer temperatures on average in the summer. 
+> Summer air temperature is very important to this species because it was the most influential variable in the model. Maybe some part of their breeding or other important stage of their life cycle occurs in summer. From the code I wrote below, it seems like they like warmer temperatures on average in the summer.
 
 > Their distance to the coast is also very important in determining the prescence of this eel species. The average distance for the dataset while the eel is present is HALF of that with the eel absent, so I'm thinking that the eel likes to be closer to the coast rather than farther. Maybe this is because they are anadromous in some way or need brackish water for part of their life cycle.
 
-> The species also seems to be heavily influence in the amount of native forest that the particular habitat contains... no surprise there! 
+> The species also seems to be heavily influence in the amount of native forest that the particular habitat contains... no surprise there!
 
-> The species also seems to like areas with more gently sloped downstream areas, which to me suggests that they somewhat rely on being able to travel up and downstream... 
+> The species also seems to like areas with more gently sloped downstream areas, which to me suggests that they somewhat rely on being able to travel up and downstream...
 
 ```{r}
 # make a little subset dataframe for just the places that the eel was present
@@ -408,7 +394,3 @@ mean(eel_pres$DSMaxSlope) # = 1.544
 mean(eel_abs$DSMaxSlope) # = 3.395
 
 ```
-
-
-
-
